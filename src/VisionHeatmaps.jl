@@ -1,5 +1,10 @@
 module VisionHeatmaps
 
-# Write your package code here.
+using ColorSchemes: ColorScheme, get, seismic
+using ImageCore
 
-end
+include("heatmap.jl")
+
+export heatmap
+
+end # module

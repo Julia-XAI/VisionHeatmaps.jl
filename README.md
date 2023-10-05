@@ -1,4 +1,4 @@
-# VisionHeatmaps
+# VisionHeatmaps.jl
 
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://Julia-XAI.github.io/VisionHeatmaps.jl/stable/)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://Julia-XAI.github.io/VisionHeatmaps.jl/dev/)
