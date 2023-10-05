@@ -1,0 +1,7 @@
+name = "VisionHeatmaps"
+uuid = "27106da1-f8bc-4ca8-8c66-9b8289f1e035"
+authors = ["Adrian Hill <gh@adrianhill.de>"]
+version = "1.0.0-DEV"
+
+[compat]
+julia = "1.6"
