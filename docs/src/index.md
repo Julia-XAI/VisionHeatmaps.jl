@@ -2,13 +2,17 @@
 CurrentModule = VisionHeatmaps
 ```
 
-# VisionHeatmaps
+# VisionHeatmaps.jl
+Documentation for [VisionHeatmaps.jl](https://github.com/Julia-XAI/VisionHeatmaps.jl).
 
-Documentation for [VisionHeatmaps](https://github.com/Julia-XAI/VisionHeatmaps.jl).
+## Installation
+To install this package and its dependencies, open the Julia REPL and run
 
-```@index
+```julia-repl
+]add VisionHeatmaps
 ```
 
-```@autodocs
-Modules = [VisionHeatmaps]
+## API
+```@docs
+heatmap
 ```
