@@ -1,14 +1,13 @@
-# Getting
-Let's assume you took the following image,
+# Getting started
+Let's assume you took the following image `img`,
 reshaped it to WHCN format *(width, height, color channels, batch dimension)*
 and ran it through a vision model:
 
 ```@example 1
 using Images
 using HTTP # hide
-asset_dir = joinpath(@__DIR__, "..", "assets") #hide
-img = load(joinpath(asset_dir, "img1.png")) #hide
-img
+asset_dir = joinpath(@__DIR__, "..", "assets") # hide
+img = load(joinpath(asset_dir, "img1.png"))
 ```
 
 You might use an input space attribution method 
@@ -18,8 +17,12 @@ to determine which parts of the input contributed most to the "saxophone" class.
 Let's load such an attribution `val` in WHCN format:
 ```@example 1
 using JLD2 # hide
-val = load(joinpath(asset_dir, "heatmap.jld2"), "x") # hide
-typeof(val), size(val)
+val = load(joinpath(asset_dir, "heatmap.jld2"), "x")
+typeof(val)
+```
+
+```@example 1
+size(val)
 ```
 
 To make this attribution more interpretable,
@@ -29,8 +32,7 @@ using VisionHeatmaps
 heatmap(val)
 ```
 
-## Custom heatmap settings
-### Color schemes
+## Custom color schemes
 We can partially or fully override presets by passing keyword arguments to [`heatmap`](@ref).
 For example, we can use a custom color scheme from ColorSchemes.jl using the keyword argument `cs`:
 
@@ -46,16 +48,12 @@ heatmap(val; colorscheme=ColorSchemes.inferno)
 Refer to the [ColorSchemes.jl catalogue](https://juliagraphics.github.io/ColorSchemes.jl/stable/basics/)
 for a gallery of available color schemes.
 
-### [Color channel reduction](@id docs-heatmap-reduce)
-Explanations have the same dimensionality as the inputs to the classifier.
-For images with multiple color channels,
-this means that the explanation also has a "color channel" dimension.
+## [Custom color channel reduction](@id docs-heatmap-reduce)
+For arrays with multiple color channels, the channels need to be reduced to a single scalar value for each pixel, which is later mapped onto a color scheme.
 
-The keyword argument `reduce` can be used to reduce this dimension
-to a single scalar value for each pixel.
-The following presets are available:
+The following presets are available for this purpose:
 - `:sum`: sum up color channels (default setting)
-- `:norm`: compute 2-norm over the color channels
+- `:norm`: compute 2-norm over color channels
 - `:maxabs`: compute `maximum(abs, x)` over the color channels
 
 ```@example 1
@@ -70,15 +68,15 @@ heatmap(val; reduce=:norm)
 heatmap(val; reduce=:maxabs)
 ```
 
-Using the default `reduce=:sum` visibly leaves more negative values in the heatmap.
+Using the default `reduce=:sum` visibly leaves more negative values in the heatmap, highlighting only the saxophone.
 
-### [Mapping reduced values onto a color scheme](@id docs-heatmap-rangescale)
-To map a [color-channel-reduced](@ref docs-heatmap-reduce) explanation onto a color scheme,
+## [Mapping reduced values onto a color scheme](@id docs-heatmap-rangescale)
+To map the now [color-channel-reduced](@ref docs-heatmap-reduce) array onto a color scheme,
 we first need to normalize all values to the range $[0, 1]$.
 
 For this purpose, two presets are available through the `rangescale` keyword argument:
-- `:extrema`: normalize to the minimum and maximum value of the explanation
-- `:centered`: normalize to the maximum absolute value of the explanation.
+- `:extrema`: normalize to the minimum and maximum value in the array.
+- `:centered`: normalize to the maximum absolute value of the array.
   Values of zero will be mapped to the center of the color scheme.
 
 Depending on the color scheme, one of these presets may be more suitable than the other.
@@ -89,14 +87,15 @@ making `:centered` a good choice:
 heatmap(val; rangescale=:centered)
 ````
 
-With the `seismic` colorscheme, the `:extrema` rangescale should be avoided, as it leads to visual artifacts:
+With centered color schemes such as `seismic`, 
+`:extrema` should be avoided, as it leads to visual artifacts:
 
 ````@example 1
 heatmap(val; rangescale=:extrema)
 ````
 
 However, for the `inferno` color scheme, which is not centered around zero,
-`:extrema` leads to a heatmap with higher contrast.
+`:extrema` can lead to a heatmap with higher contrast.
 
 ````@example 1
 heatmap(val; colorscheme=ColorSchemes.inferno, rangescale=:centered)
@@ -115,14 +114,17 @@ Let's assume we computed an input space attribution `val_batch` for the followin
 
 ```@example 1
 imgs = [load(joinpath(asset_dir, f)) for f in ("img1.png", "img2.png", "img3.png", "img4.png", "img5.png")] # hide 
-imgs
 ```
 
 Once again, we assume that `val_batch` is in WHCN format:
 
 ```@example 1
-val_batch = load(joinpath(asset_dir, "heatmaps.jld2"), "x") # hide
-typeof(val_batch), size(val_batch)
+val_batch = load(joinpath(asset_dir, "heatmaps.jld2"), "x")
+typeof(val_batch)
+```
+
+```@example 1
+size(val_batch)
 ```
 
 Calling `heatmap` will automatically return an vector of images:
@@ -131,13 +133,20 @@ Calling `heatmap` will automatically return an vector of images:
 heatmap(val_batch)
 ```
 
-Heatmaps can be customized as usual:
+These heatmaps can be customized as usual:
 
 ```@example 1
 heatmap(val_batch; colorscheme=ColorSchemes.inferno, rangescale=:extrema)
 ```
 
 ### Processing batches
+The normalization when [mapping values onto a color scheme](@ref docs-heatmap-rangescale) 
+can optionally be computed for a batch. 
+Using the example of `rangescale=:extrema`, this means that the minimum and maximum value
+will be computed over all images in the batch, instead of individually for each image.
+
+Note that this will lead to different heatmaps for each image, based on other images in the batch.
+
 ```@example 1
 heatmap(val_batch; process_batch=true)
 ```
@@ -147,6 +156,12 @@ heatmap(val_batch; colorscheme=ColorSchemes.inferno, rangescale=:extrema, proces
 ```
 
 ### Consistent output types
+As we have seen, calling `heatmap` on an array of size `(W, H, C, 1)` 
+will return a single heatmap image, while calling it on an array of size `(W, H, C, N)`
+will return a vector of heatmap. 
+This is due to the fact that VisionHeatmaps.jl will automatically "unpack" singleton vectors of heatmaps.
+
+If this behavior is not desired, the keyword argument `unpack_singleton` can be set to `false`:
 ```@example 1
 heatmap(val; unpack_singleton=false)
 ```
