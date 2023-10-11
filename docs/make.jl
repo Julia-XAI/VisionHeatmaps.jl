@@ -13,6 +13,7 @@ makedocs(;
         canonical="https://julia-xai.github.io/VisionHeatmaps.jl",
         edit_link="main",
         assets=String[],
+        size_threshold_ignore=["example.md"],
     ),
     pages=["Home" => "index.md", "Getting started" => "example.md"],
 )

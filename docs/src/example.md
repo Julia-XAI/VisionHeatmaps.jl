@@ -121,7 +121,7 @@ imgs = [load(joinpath(asset_dir, f)) for f in ("img1.png", "img2.png", "img3.png
 Once again, we assume that `val_batch` is in WHCN format:
 
 ```@example 1
-url = joinpath(asset_dir, "heatmap.jld2") # hide
+url = joinpath(asset_dir, "heatmaps.jld2") # hide
 data_heatmaps = download(url) # hide
 val_batch = load(data_heatmaps, "x") # load precomputed array from file
 typeof(val_batch)

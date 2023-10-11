@@ -23,3 +23,4 @@ To install this package and its dependencies, open the Julia REPL and run
 ## Related packages
 * [TextHeatmaps.jl](https://github.com/Julia-XAI/TextHeatmaps.jl):
   Sibling package for visualization of sentiment analysis and input space attributions of NLP models.
+* [ExplainableAI.jl](https://github.com/Julia-XAI/ExplainableAI.jl): VisionHeatmaps.jl was designed as a dependency for visualization of attributions from ExplainableAI.jl.
