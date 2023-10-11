@@ -10,7 +10,7 @@ makedocs(;
     sitename="VisionHeatmaps.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://Julia-XAI.github.io/VisionHeatmaps.jl",
+        canonical="https://julia-xai.github.io/VisionHeatmaps.jl",
         edit_link="main",
         assets=String[],
     ),
