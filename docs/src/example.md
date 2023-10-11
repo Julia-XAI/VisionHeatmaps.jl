@@ -6,8 +6,8 @@ and ran it through a vision model:
 ```@example 1
 using Images
 using HTTP # hide
-asset_dir = joinpath(@__DIR__, "..", "assets") # hide
-img = load(joinpath(asset_dir, "img1.png"))
+asset_dir = HTTP.URI("https://raw.githubusercontent.com/Julia-XAI/VisionHeatmaps.jl/gh-pages/assets/") # hide
+img = load(joinpath(asset_dir, "img1.png")) # load image file
 ```
 
 You might use an input space attribution method 
@@ -17,7 +17,9 @@ to determine which parts of the input contributed most to the "saxophone" class.
 Let's load such an attribution `val` in WHCN format:
 ```@example 1
 using JLD2 # hide
-val = load(joinpath(asset_dir, "heatmap.jld2"), "x")
+url = joinpath(asset_dir, "heatmap.jld2") # hide
+data_heatmap = download(url) # hide
+val = load(data_heatmap, "x") # load precomputed array from file
 typeof(val)
 ```
 
@@ -113,13 +115,15 @@ For the full list of `heatmap` keyword arguments, refer to the [`heatmap`](@ref)
 Let's assume we computed an input space attribution `val_batch` for the following images:
 
 ```@example 1
-imgs = [load(joinpath(asset_dir, f)) for f in ("img1.png", "img2.png", "img3.png", "img4.png", "img5.png")] # hide 
+imgs = [load(joinpath(asset_dir, f)) for f in ("img1.png", "img2.png", "img3.png", "img4.png", "img5.png")] # load image files 
 ```
 
 Once again, we assume that `val_batch` is in WHCN format:
 
 ```@example 1
-val_batch = load(joinpath(asset_dir, "heatmaps.jld2"), "x")
+url = joinpath(asset_dir, "heatmap.jld2") # hide
+data_heatmaps = download(url) # hide
+val_batch = load(data_heatmaps, "x") # load precomputed array from file
 typeof(val_batch)
 ```
 
