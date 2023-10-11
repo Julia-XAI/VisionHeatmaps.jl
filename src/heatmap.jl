@@ -70,7 +70,7 @@ end
 flip_wh(img::AbstractArray{T,2}) where {T} = permutedims(img, (2, 1))
 flip_wh(img::AbstractArray{T,3}) where {T} = permutedims(img, (2, 1, 3))
 
-# Reduce explanations across color channels into a single scalar – assumes WHCN convention
+# Reduce array across color channels into a single scalar – assumes WHCN convention
 function reduce_color_channel(val::AbstractArray, method::Symbol)
     init = zero(eltype(val))
     if size(val, 3) == 1 # nothing to reduce
