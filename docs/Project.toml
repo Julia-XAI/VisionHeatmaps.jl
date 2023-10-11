@@ -1,3 +1,7 @@
 [deps]
+ColorSchemes = "35d6a980-a343-548e-a6ea-1d62b119f2f4"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
+Images = "916415d5-f1e6-5110-898d-aaa5f9f070e0"
+JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
 VisionHeatmaps = "27106da1-f8bc-4ca8-8c66-9b8289f1e035"

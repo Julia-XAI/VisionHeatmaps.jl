@@ -10,16 +10,11 @@ makedocs(;
     sitename="VisionHeatmaps.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://Julia-XAI.github.io/VisionHeatmaps.jl",
+        canonical="https://julia-xai.github.io/VisionHeatmaps.jl",
         edit_link="main",
         assets=String[],
     ),
-    pages=[
-        "Home" => "index.md",
-    ],
+    pages=["Home" => "index.md", "Getting started" => "example.md"],
 )
 
-deploydocs(;
-    repo="github.com/Julia-XAI/VisionHeatmaps.jl",
-    devbranch="main",
-)
+deploydocs(; repo="github.com/Julia-XAI/VisionHeatmaps.jl", devbranch="main")
