@@ -30,6 +30,10 @@ end
 @testset "ColorSchemes" begin
     h = heatmap(A; colorscheme=ColorSchemes.inferno)
     @test_reference "references/inferno.txt" h
+
+    # Test colorscheme symbols
+    h = heatmap(A; colorscheme=:inferno)
+    @test_reference "references/inferno.txt" h
 end
 
 @testset "Error handling" begin

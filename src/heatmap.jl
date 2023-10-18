@@ -9,7 +9,7 @@ Visualize 4D arrays as heatmaps, assuming the WHCN convention for input array di
 (width, height, color channels, batch dimension).
 
 ## Keyword arguments
-- `colorscheme::ColorScheme`: Color scheme from ColorSchemes.jl.
+- `colorscheme::Union{ColorScheme,Symbol}`: Color scheme from ColorSchemes.jl.
   Defaults to `seismic`.
 - `reduce::Symbol`: Selects how color channels are reduced to a single number to apply a color scheme.
   The following methods can be selected, which are then applied over the color channels
@@ -32,7 +32,7 @@ Visualize 4D arrays as heatmaps, assuming the WHCN convention for input array di
 """
 function heatmap(
     val::AbstractArray{T,N};
-    colorscheme::ColorScheme=DEFAULT_COLORSCHEME,
+    colorscheme::Union{ColorScheme,Symbol}=DEFAULT_COLORSCHEME,
     reduce::Symbol=DEFAULT_REDUCE,
     rangescale::Symbol=DEFAULT_RANGESCALE,
     permute::Bool=true,
@@ -40,6 +40,7 @@ function heatmap(
     process_batch::Bool=false,
 ) where {T,N}
     N != 4 && throw(InputDimensionError)
+    colorscheme = get_colorscheme(colorscheme)
     if unpack_singleton && size(val, 4) == 1
         return single_heatmap(val[:, :, :, 1], colorscheme, reduce, rangescale, permute)
     end
@@ -57,6 +58,9 @@ const InputDimensionError = ArgumentError(
     "heatmap assumes the WHCN convention for input array dimensions (width, height, color channels, batch dimension).
     Please reshape your input to match this format if your model doesn't adhere to this convention.",
 )
+
+get_colorscheme(c::ColorScheme) = c
+get_colorscheme(s::Symbol)::ColorScheme = colorschemes[s]
 
 # Lower level function, mapped along batch dimension
 function single_heatmap(
