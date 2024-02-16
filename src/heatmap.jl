@@ -17,6 +17,8 @@ Visualize 4D arrays as heatmaps, assuming the WHCN convention for input array di
   - `:sum`: sum up color channels
   - `:norm`: compute 2-norm over the color channels
   - `:maxabs`: compute `maximum(abs, x)` over the color channels
+  - `:sumabs`: compute `sum(abs, x)` over the color channels
+  - `:abssum`: compute `abs(sum(x))` over the color channels
   Defaults to `:$DEFAULT_REDUCE`.
 - `rangescale::Symbol`: Selects how the color channel reduced heatmap is normalized
   before the color scheme is applied. Can be either `:extrema` or `:centered`.
@@ -85,8 +87,14 @@ function reduce_color_channel(val::AbstractArray, method::Symbol)
         return reduce((c...) -> maximum(abs.(c)), val; dims=3, init=init)
     elseif method == :norm
         return reduce((c...) -> sqrt(sum(c .^ 2)), val; dims=3, init=init)
+    elseif method == :sumabs
+        return reduce((c...) -> sum(abs, c), val; dims=3, init=init)
+    elseif method == :abssum
+        return reduce((c...) -> abs(sum(c)), val; dims=3, init=init)
     end
     throw( # else
-        ArgumentError("`reduce` :$method not supported, should be :maxabs, :sum or :norm"),
+        ArgumentError(
+            "`reduce` :$method not supported, should be :maxabs, :sum, :norm, :sumabs, or :abssum",
+        ),
     )
 end
