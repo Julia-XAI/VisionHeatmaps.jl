@@ -1,10 +1,16 @@
 # VisionHeatmaps.jl
+## Version `v1.2.0`
+* ![Feature][badge-feature] Add heatmap overlays ([#5][pr-5])
+* ![Feature][badge-feature] Add color channel reduction presets `:sumabs` and `:abssum` ([#6][pr-6]) 
+
 ## Version `v1.1.0`
 * ![Feature][badge-feature] Access color schemes through their symbols ([#3][pr-3])
 
 ## Version `v1.0.0`
 * Initial release
 
+[pr-6]: https://github.com/Julia-XAI/VisionHeatmaps.jl/pull/6
+[pr-5]: https://github.com/Julia-XAI/VisionHeatmaps.jl/pull/5
 [pr-3]: https://github.com/Julia-XAI/VisionHeatmaps.jl/pull/3
 
 <!--
