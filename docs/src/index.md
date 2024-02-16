@@ -15,4 +15,5 @@ To install this package and its dependencies, open the Julia REPL and run
 ## API
 ```@docs
 heatmap
+heatmap_overlay
 ```
