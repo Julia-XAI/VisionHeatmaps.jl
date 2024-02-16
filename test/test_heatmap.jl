@@ -9,7 +9,7 @@ batch = reshape(collect(Float32, 1:prod(shape)), shape)
 img = [RGB(1, 0, 0) RGB(0, 1, 0); RGB(0, 0, 1) RGB(1, 1, 1)]
 img2 = [RGB(x, y, 0) for x in 0:0.2:1, y in 0:0.2:1]
 
-reducers = [:sum, :maxabs, :norm]
+reducers = [:sum, :maxabs, :norm, :sumabs, :abssum]
 rangescales = [:extrema, :centered]
 
 @testset "Single input" begin
