@@ -1,4 +1,4 @@
-const DEFAULT_COLORSCHEME = seismic
+const DEFAULT_COLORSCHEME = :seismic
 const DEFAULT_REDUCE = :sum
 const DEFAULT_RANGESCALE = :centered
 

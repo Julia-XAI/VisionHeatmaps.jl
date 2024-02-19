@@ -1,16 +1,9 @@
-module VisionHeatmapsXAIBaseExt
-
-using VisionHeatmaps, XAIBase
-
 struct HeatmapConfig
     colorscheme::Symbol
     reduce::Symbol
     rangescale::Symbol
 end
 
-const DEFAULT_COLORSCHEME = :seismic
-const DEFAULT_REDUCE = :sum
-const DEFAULT_RANGESCALE = :centered
 const DEFAULT_HEATMAP_PRESET = HeatmapConfig(
     DEFAULT_COLORSCHEME, DEFAULT_REDUCE, DEFAULT_RANGESCALE
 )
@@ -42,7 +35,7 @@ end
 Visualize `Explanation` from XAIBase as a vision heatmap.
 Assumes WHCN convention (width, height, channels, batchsize) for `explanation.val`.
 """
-function VisionHeatmaps.heatmap(expl::Explanation; kwargs...)
+function heatmap(expl::Explanation; kwargs...)
     c = get_heatmapping_config(expl; kwargs...)
     return heatmap(
         expl.val;
@@ -65,9 +58,7 @@ Refer to the `analyze` documentation for more information on available keyword a
 To customize the heatmapping style, first compute an explanation using `analyze`
 and then call [`heatmap`](@ref) on the explanation.
 """
-function VisionHeatmaps.heatmap(input, analyzer::AbstractXAIMethod, args...; kwargs...)
+function heatmap(input, analyzer::AbstractXAIMethod, args...; kwargs...)
     expl = analyze(input, analyzer, args...; kwargs...)
     return heatmap(expl)
 end
-
-end # module
