@@ -32,3 +32,24 @@ end
     @test_reference "references/process_batch_false.txt" h1
     @test_reference "references/process_batch_true.txt" h2
 end
+
+@testset "Direct Analyzer call" begin
+    struct DummyAnalyzer <: AbstractXAIMethod end
+    function (method::DummyAnalyzer)(input, output_selector::AbstractOutputSelector)
+        output = input
+        output_selection = output_selector(output)
+        batchsize = size(input)[end]
+        v = reshape(output[output_selection], :, batchsize)
+        val = input .* v
+        return Explanation(val, output, output_selection, :Dummy, :attribution)
+    end
+
+    analyzer = DummyAnalyzer()
+    input = reshape([1 6 2 5 3 4], 2, 3, 1, 1)
+    val = reshape([3 36 6 30 9 24], 2, 3, 1, 1) # Explanation for max activation
+    expl = analyzer(input)
+
+    h1 = heatmap(expl)
+    h2 = heatmap(input, analyzer)
+    @test h1 ≈ h2
+end
