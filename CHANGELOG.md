@@ -1,6 +1,6 @@
 # VisionHeatmaps.jl
-## Version `v1.3.0`
-* ![Feature][badge-feature] Add XAIBase package extension ([#7][pr-7])
+## Version `v1.3.1`
+* ![Feature][badge-feature] Add XAIBase dependecy ([#7][pr-7], [#8][pr-8])
 
 ## Version `v1.2.0`
 * ![Feature][badge-feature] Add heatmap overlays ([#5][pr-5])
@@ -12,6 +12,7 @@
 ## Version `v1.0.0`
 * Initial release
 
+[pr-8]: https://github.com/Julia-XAI/VisionHeatmaps.jl/pull/8
 [pr-7]: https://github.com/Julia-XAI/VisionHeatmaps.jl/pull/7
 [pr-6]: https://github.com/Julia-XAI/VisionHeatmaps.jl/pull/6
 [pr-5]: https://github.com/Julia-XAI/VisionHeatmaps.jl/pull/5
