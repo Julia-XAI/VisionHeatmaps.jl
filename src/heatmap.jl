@@ -3,7 +3,7 @@ const DEFAULT_REDUCE = :sum
 const DEFAULT_RANGESCALE = :centered
 
 """
-    heatmap(x)
+    heatmap(x::AbstractArray)
 
 Visualize 4D arrays as heatmaps, assuming the WHCN convention for input array dimensions
 (width, height, color channels, batch dimension).

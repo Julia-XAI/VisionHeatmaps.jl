@@ -30,10 +30,13 @@ function get_heatmapping_config(expl::Explanation; kwargs...)
 end
 
 """
-    heatmap(explanation)
+    heatmap(expl::Explanation)
 
 Visualize `Explanation` from XAIBase as a vision heatmap.
-Assumes WHCN convention (width, height, channels, batchsize) for `explanation.val`.
+Assumes WHCN convention (width, height, channels, batch dimension) for `explanation.val`.
+
+This will use the default heatmapping style for the given type of explanation.
+Defaults can be overridden via keyword arguments.
 """
 function heatmap(expl::Explanation; kwargs...)
     c = get_heatmapping_config(expl; kwargs...)
@@ -47,7 +50,7 @@ function heatmap(expl::Explanation; kwargs...)
 end
 
 """
-    heatmap(input, analyzer)
+    heatmap(input::AbstractArray, analyzer::AbstractXAIMethod)
 
 Compute an `Explanation` for a given `input` using the XAI method `analyzer` and visualize it
 as a vision heatmap.
