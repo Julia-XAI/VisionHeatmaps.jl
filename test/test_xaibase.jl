@@ -5,19 +5,37 @@ using XAIBase
 @testset "Single input" begin
     shape = (2, 2, 3, 1)
     val = output = reshape(collect(Float32, 1:prod(shape)), shape)
-    output_selection = [CartesianIndex(1, 2)] # irrelevant
-    expl = Explanation(val, output, [output_selection], :LRP, :attribution)
+    output_selection = [[CartesianIndex(1, 2)]] # irrelevant
 
-    reducers = [:sum, :maxabs, :norm, :sumabs, :abssum]
-    rangescales = [:extrema, :centered]
-    for reducer in reducers
-        for rangescale in rangescales
-            local h = heatmap(expl; reduce=reducer, rangescale=rangescale)
-            @test_reference "references/$(reducer)_$(rangescale).txt" h
-            h2 = heatmap(
-                expl; reduce=reducer, rangescale=rangescale, unpack_singleton=false
-            )[1]
-            @test h ≈ h2
+    # Test presets
+    @testset "Heatmapping presets" begin
+        expl = Explanation(val, output, output_selection, :DummyAnalyzer, :attribution)
+        h = heatmap(expl)
+        @test_reference "references/sum_centered_seismic.txt" h
+        expl = Explanation(val, output, output_selection, :DummyAnalyzer, :sensitivity)
+        h = heatmap(expl; colorscheme=:seismic)
+        @test_reference "references/norm_extrema_grays.txt" h
+        expl = Explanation(val, output, output_selection, :DummyAnalyzer, :cam)
+        h = heatmap(expl; colorscheme=:seismic)
+        @test_reference "references/sum_extrema_jet.txt" h
+    end
+
+    @testset "Overriding presets" begin
+        # The following Explanation selects the jet colorscheme
+        expl = Explanation(val, output, output_selection, :DummyAnalyzer, :attribution)
+
+        # Custom configuration
+        reducers = [:sum, :maxabs, :norm, :sumabs, :abssum]
+        rangescales = [:extrema, :centered]
+        for reducer in reducers
+            for rangescale in rangescales
+                local h = heatmap(expl; reduce=reducer, rangescale=rangescale)
+                @test_reference "references/$(reducer)_$(rangescale)_jet.txt" h
+                h2 = heatmap(
+                    expl; reduce=reducer, rangescale=rangescale, unpack_singleton=false
+                )[1]
+                @test h ≈ h2
+            end
         end
     end
 end

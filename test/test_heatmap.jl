@@ -9,29 +9,36 @@ batch = reshape(collect(Float32, 1:prod(shape)), shape)
 img = [RGB(1, 0, 0) RGB(0, 1, 0); RGB(0, 0, 1) RGB(1, 1, 1)]
 img2 = [RGB(x, y, 0) for x in 0:0.2:1, y in 0:0.2:1]
 
+colorschemes = [:seismic, :grays, :jet]
 reducers = [:sum, :maxabs, :norm, :sumabs, :abssum]
 rangescales = [:extrema, :centered]
 
 @testset "Single input" begin
-    for reducer in reducers
-        for rangescale in rangescales
-            h = heatmap(A; reduce=reducer, rangescale=rangescale)
-            @test_reference "references/$(reducer)_$(rangescale).txt" h
-            h2 = heatmap(A; reduce=reducer, rangescale=rangescale, unpack_singleton=false)[1]
-            @test h ≈ h2
+    for colorscheme in colorschemes
+        for reducer in reducers
+            for rangescale in rangescales
+                h = heatmap(A; reduce=reducer, rangescale=rangescale)
+                @test_reference "references/$(reducer)_$(rangescale)_$(colorscheme).txt" h
+                h2 = heatmap(
+                    A; reduce=reducer, rangescale=rangescale, unpack_singleton=false
+                )[1]
+                @test h ≈ h2
 
-            ho = heatmap_overlay(A, img; reduce=reducer, rangescale=rangescale)
-            @test size(ho) == size(img)
-            @test_reference "references/overlay_$(reducer)_$(rangescale).txt" ho
+                ho = heatmap_overlay(A, img; reduce=reducer, rangescale=rangescale)
+                @test size(ho) == size(img)
+                @test_reference "references/overlay_$(reducer)_$(rangescale)_$(colorscheme).txt" ho
+            end
         end
     end
 end
 @testset "Overlay rescaling" begin
-    for reducer in reducers
-        for rangescale in rangescales
-            ho = heatmap_overlay(A, img2; reduce=reducer, rangescale=rangescale)
-            @test size(ho) == size(img2)
-            @test_reference "references/overlay_rescale_$(reducer)_$(rangescale).txt" ho
+    for colorscheme in colorschemes
+        for reducer in reducers
+            for rangescale in rangescales
+                ho = heatmap_overlay(A, img2; reduce=reducer, rangescale=rangescale)
+                @test size(ho) == size(img2)
+                @test_reference "references/overlay_rescale_$(reducer)_$(rangescale)_$(colorscheme).txt" ho
+            end
         end
     end
 end

@@ -1,4 +1,5 @@
 const DEFAULT_OVERLAY_ALPHA = 0.6
+const DEFAULT_RESIZE_METHOD = Lanczos(1)
 
 """
     heatmap_overlay(val, img)
@@ -19,8 +20,8 @@ function heatmap_overlay(
     val::AbstractArray{T,N},
     im::AbstractMatrix{<:Colorant};
     alpha=DEFAULT_OVERLAY_ALPHA,
-    resize_method=Lanczos(1),
-    kwargs...,
+    resize_method=DEFAULT_RESIZE_METHOD,
+    heatmap_kwargs...,
 ) where {T,N}
     N != 4 && throw(InputDimensionError)
     if size(val, 4) != 1
@@ -33,7 +34,9 @@ function heatmap_overlay(
     if alpha < 0 || alpha > 1
         throw(ArgumentError("alpha must be in the range [0, 1]"))
     end
-    hm = heatmap(val; kwargs...)
+
+    options = HeatmapOptions(; heatmap_kwargs...)
+    hm = heatmap(val, options)
     hmsize = size(hm)
     imsize = size(im)
     if hmsize != imsize
