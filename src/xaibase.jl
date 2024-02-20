@@ -1,16 +1,21 @@
-const HEATMAP_PRESETS = Dict{Symbol,Function}(
-    :attribution => (kwargs...) -> HeatmapOptions(; colorscheme=:seismic, reduce=:sum, rangescale=:centered, kwargs...),
-    :sensitivity => (kwargs...) -> HeatmapOptions(; colorscheme=:grays, reduce=:norm, rangescale=:extrema, kwargs...),
-    :cam         => (kwargs...) -> HeatmapOptions(; colorscheme=:jet, reduce=:sum, rangescale=:extrema, kwargs...),
+const HEATMAP_PRESETS = Dict{
+    Symbol,@NamedTuple{colorscheme::Symbol, reduce::Symbol, rangescale::Symbol}
+}(
+    :attribution => (colorscheme=:seismic, reduce=:sum, rangescale=:centered),
+    :sensitivity => (colorscheme=:grays, reduce=:norm, rangescale=:extrema),
+    :cam         => (colorscheme=:jet, reduce=:sum, rangescale=:extrema),
 )
 
-DEFAULT_HEATMAP_PRESET = (kwargs...) -> HeatmapOptions(; kwargs...)
+DEFAULT_HEATMAP_PRESET = (
+    colorscheme=DEFAULT_COLORSCHEME, reduce=DEFAULT_REDUCE, rangescale=DEFAULT_RANGESCALE
+),
 
 # Override HeatmapConfig preset with keyword arguments
-function get_heatmapping_options(expl::Explanation; kwargs...)
-    constructor = get(HEATMAP_PRESETS, expl.heatmap, DEFAULT_HEATMAP_PRESET)
-    options = constructor(kwargs...)
-    return options
+function HeatmapOptions(expl::Explanation; kwargs...)
+    c = get(HEATMAP_PRESETS, expl.heatmap, DEFAULT_HEATMAP_PRESET)
+    return HeatmapOptions(;
+        colorscheme=c.colorscheme, reduce=c.reduce, rangescale=c.rangescale, kwargs...
+    )
 end
 
 #=========#
@@ -26,10 +31,7 @@ Assumes WHCN convention (width, height, channels, batch dimension) for `explanat
 This will use the default heatmapping style for the given type of explanation.
 Defaults can be overridden via keyword arguments.
 """
-function heatmap(expl::Explanation; kwargs...)
-    options = get_heatmapping_options(expl; kwargs...)
-    return heatmap(expl.val, options)
-end
+heatmap(expl::Explanation; kwargs...) = heatmap(expl.val, HeatmapOptions(expl; kwargs...))
 
 """
     heatmap(input::AbstractArray, analyzer::AbstractXAIMethod)
