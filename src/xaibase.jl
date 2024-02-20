@@ -1,33 +1,21 @@
-struct HeatmapConfig
-    colorscheme::Symbol
-    reduce::Symbol
-    rangescale::Symbol
-end
-
-const DEFAULT_HEATMAP_PRESET = HeatmapConfig(
-    DEFAULT_COLORSCHEME, DEFAULT_REDUCE, DEFAULT_RANGESCALE
+const HEATMAP_PRESETS = Dict{Symbol,Function}(
+    :attribution => (kwargs...) -> HeatmapOptions(; colorscheme=:seismic, reduce=:sum, rangescale=:centered, kwargs...),
+    :sensitivity => (kwargs...) -> HeatmapOptions(; colorscheme=:grays, reduce=:norm, rangescale=:extrema, kwargs...),
+    :cam         => (kwargs...) -> HeatmapOptions(; colorscheme=:jet, reduce=:sum, rangescale=:extrema, kwargs...),
 )
 
-const HEATMAP_PRESETS = Dict{Symbol,HeatmapConfig}(
-    :attribution => HeatmapConfig(:seismic, :sum, :centered),
-    :sensitivity => HeatmapConfig(:grays, :norm, :extrema),
-    :cam         => HeatmapConfig(:jet, :sum, :extrema),
-)
-
-# Select HeatmapConfig preset based on heatmapping style in Explanation
-function get_heatmapping_config(heatmap::Symbol)
-    return get(HEATMAP_PRESETS, heatmap, DEFAULT_HEATMAP_PRESET)
-end
+DEFAULT_HEATMAP_PRESET = (kwargs...) -> HeatmapOptions(; kwargs...)
 
 # Override HeatmapConfig preset with keyword arguments
-function get_heatmapping_config(expl::Explanation; kwargs...)
-    c = get_heatmapping_config(expl.heatmap)
-
-    colorscheme = get(kwargs, :colorscheme, c.colorscheme)
-    rangescale  = get(kwargs, :rangescale, c.rangescale)
-    reduce      = get(kwargs, :reduce, c.reduce)
-    return HeatmapConfig(colorscheme, reduce, rangescale)
+function get_heatmapping_options(expl::Explanation; kwargs...)
+    constructor = get(HEATMAP_PRESETS, expl.heatmap, DEFAULT_HEATMAP_PRESET)
+    options = constructor(kwargs...)
+    return options
 end
+
+#=========#
+# Heatmap #
+#=========#
 
 """
     heatmap(expl::Explanation)
@@ -39,14 +27,8 @@ This will use the default heatmapping style for the given type of explanation.
 Defaults can be overridden via keyword arguments.
 """
 function heatmap(expl::Explanation; kwargs...)
-    c = get_heatmapping_config(expl; kwargs...)
-    return heatmap(
-        expl.val;
-        colorscheme=c.colorscheme,
-        reduce=c.reduce,
-        rangescale=c.rangescale,
-        kwargs...,
-    )
+    options = get_heatmapping_options(expl; kwargs...)
+    return heatmap(expl.val, options)
 end
 
 """
@@ -61,7 +43,7 @@ Refer to the `analyze` documentation for more information on available keyword a
 To customize the heatmapping style, first compute an explanation using `analyze`
 and then call [`heatmap`](@ref) on the explanation.
 """
-function heatmap(input, analyzer::AbstractXAIMethod, args...; kwargs...)
-    expl = analyze(input, analyzer, args...; kwargs...)
+function heatmap(input, analyzer::AbstractXAIMethod, analyze_args...; analyze_kwargs...)
+    expl = analyze(input, analyzer, analyze_args...; analyze_kwargs...)
     return heatmap(expl)
 end
