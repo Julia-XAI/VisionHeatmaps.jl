@@ -21,6 +21,6 @@ using JuliaFormatter
     end
     @testset "XAIBase Explanations" begin
         @info "Testing heatmaps on XAIBase explanations..."
-        include("test_xaibase.jl")
+        include("test_xai_presets.jl")
     end
 end

@@ -1,7 +1,11 @@
 using ImageCore
+using XAIBase
 
 shape = (2, 2, 3, 1)
 A = reshape(collect(Float32, 1:prod(shape)), shape)
+val = output = reshape(collect(Float32, 1:prod(shape)), shape)
+output_selection = [[CartesianIndex(1, 2)]] # irrelevant
+expl = Explanation(val, output, output_selection, :DummyAnalyzer, :attribution)
 
 shape = (2, 2, 3, 2)
 batch = reshape(collect(Float32, 1:prod(shape)), shape)
@@ -17,16 +21,37 @@ rangescales = [:extrema, :centered]
     for colorscheme in colorschemes
         for reducer in reducers
             for rangescale in rangescales
-                h = heatmap(A; reduce=reducer, rangescale=rangescale)
-                @test_reference "references/$(reducer)_$(rangescale)_$(colorscheme).txt" h
-                h2 = heatmap(
-                    A; reduce=reducer, rangescale=rangescale, unpack_singleton=false
-                )[1]
-                @test h ≈ h2
+                h = heatmap(
+                    A; colorscheme=colorscheme, reduce=reducer, rangescale=rangescale
+                )
+                @test_reference "references/heatmap/$(colorscheme)_$(reducer)_$(rangescale).txt" h
+                h = heatmap(
+                    expl; colorscheme=colorscheme, reduce=reducer, rangescale=rangescale
+                )
+                @test_reference "references/heatmap/$(colorscheme)_$(reducer)_$(rangescale).txt" h
+                hs = heatmap(
+                    A;
+                    colorscheme=colorscheme,
+                    reduce=reducer,
+                    rangescale=rangescale,
+                    unpack_singleton=false,
+                )
+                @test_reference "references/heatmap/$(colorscheme)_$(reducer)_$(rangescale).txt" hs[1]
 
-                ho = heatmap_overlay(A, img; reduce=reducer, rangescale=rangescale)
+                ho = heatmap_overlay(
+                    A, img; colorscheme=colorscheme, reduce=reducer, rangescale=rangescale
+                )
                 @test size(ho) == size(img)
-                @test_reference "references/overlay_$(reducer)_$(rangescale)_$(colorscheme).txt" ho
+                @test_reference "references/overlay/$(colorscheme)_$(reducer)_$(rangescale).txt" ho
+                ho = heatmap_overlay(
+                    expl,
+                    img;
+                    colorscheme=colorscheme,
+                    reduce=reducer,
+                    rangescale=rangescale,
+                )
+                @test size(ho) == size(img)
+                @test_reference "references/overlay/$(colorscheme)_$(reducer)_$(rangescale).txt" ho
             end
         end
     end
@@ -35,9 +60,11 @@ end
     for colorscheme in colorschemes
         for reducer in reducers
             for rangescale in rangescales
-                ho = heatmap_overlay(A, img2; reduce=reducer, rangescale=rangescale)
+                ho = heatmap_overlay(
+                    A, img2; colorscheme=colorscheme, reduce=reducer, rangescale=rangescale
+                )
                 @test size(ho) == size(img2)
-                @test_reference "references/overlay_rescale_$(reducer)_$(rangescale)_$(colorscheme).txt" ho
+                @test_reference "references/overlay_rescaled/$(colorscheme)_$(reducer)_$(rangescale).txt" ho
             end
         end
     end
@@ -47,24 +74,24 @@ end
     for reducer in reducers
         for rangescale in rangescales
             h = heatmap(batch; reduce=reducer, rangescale=rangescale)
-            @test_reference "references/$(reducer)_$(rangescale).txt" h[1]
-            @test_reference "references/$(reducer)_$(rangescale)_2.txt" h[2]
+            @test_reference "references/heatmap/seismic_$(reducer)_$(rangescale).txt" h[1]
+            @test_reference "references/heatmap/seismic_$(reducer)_$(rangescale)_2.txt" h[2]
         end
     end
 end
 
 @testset "ColorSchemes" begin
     h = heatmap(A; colorscheme=ColorSchemes.inferno)
-    @test_reference "references/inferno.txt" h
+    @test_reference "references/heatmap/inferno_sum_centered.txt" h
 
     # Test colorscheme symbols
     h = heatmap(A; colorscheme=:inferno)
-    @test_reference "references/inferno.txt" h
+    @test_reference "references/heatmap/inferno_sum_centered.txt" h
 
     ho = heatmap_overlay(A, img; colorscheme=:inferno)
-    @test_reference "references/overlay_inferno.txt" ho
+    @test_reference "references/overlay/inferno_sum_centered.txt" ho
     ho = heatmap_overlay(A, img; colorscheme=ColorSchemes.inferno)
-    @test_reference "references/overlay_inferno.txt" ho
+    @test_reference "references/overlay/inferno_sum_centered.txt" ho
 end
 
 @testset "Error handling" begin
