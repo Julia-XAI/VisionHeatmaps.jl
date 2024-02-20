@@ -2,18 +2,10 @@ const DEFAULT_COLORSCHEME = :seismic
 const DEFAULT_REDUCE = :sum
 const DEFAULT_RANGESCALE = :centered
 
-@option struct HeatmapOptions
-    colorscheme::Union{ColorScheme,Symbol} = DEFAULT_COLORSCHEME
-    reduce::Symbol = DEFAULT_REDUCE
-    rangescale::Symbol = DEFAULT_RANGESCALE
-    permute::Bool = true
-    process_batch::Bool = false
-    unpack_singleton::Bool = true
-end
-
-get_colorscheme(options::HeatmapOptions) = get_colorscheme(options.colorscheme)
-get_colorscheme(c::ColorScheme) = c
-get_colorscheme(s::Symbol)::ColorScheme = colorschemes[s]
+const InputDimensionError = ArgumentError(
+    "heatmap assumes the WHCN convention for input array dimensions (width, height, color channels, batch dimension).
+    Please reshape your input to match this format if your model doesn't adhere to this convention.",
+)
 
 """
     heatmap(x::AbstractArray)
@@ -58,11 +50,6 @@ function heatmap(val::AbstractArray{T,N}, options::HeatmapOptions) where {T,N}
     return [single_heatmap(v, options) for v in eachslice(val; dims=4)]
 end
 
-const InputDimensionError = ArgumentError(
-    "heatmap assumes the WHCN convention for input array dimensions (width, height, color channels, batch dimension).
-    Please reshape your input to match this format if your model doesn't adhere to this convention.",
-)
-
 # Lower level function, mapped along batch dimension
 function single_heatmap(val, options::HeatmapOptions)
     img = dropdims(reduce_color_channel(val, options.reduce); dims=3)
@@ -95,4 +82,36 @@ function reduce_color_channel(val::AbstractArray, method::Symbol)
             "`reduce` :$method not supported, should be :maxabs, :sum, :norm, :sumabs, or :abssum",
         ),
     )
+end
+
+#=================#
+# XAIBase support #
+#=================#
+
+"""
+    heatmap(expl::Explanation)
+
+Visualize `Explanation` from XAIBase as a vision heatmap.
+Assumes WHCN convention (width, height, channels, batch dimension) for `explanation.val`.
+
+This will use the default heatmapping style for the given type of explanation.
+Defaults can be overridden via keyword arguments.
+"""
+heatmap(expl::Explanation; kwargs...) = heatmap(expl.val, HeatmapOptions(expl; kwargs...))
+
+"""
+    heatmap(input::AbstractArray, analyzer::AbstractXAIMethod)
+
+Compute an `Explanation` for a given `input` using the XAI method `analyzer` and visualize it
+as a vision heatmap.
+
+Any additional arguments and keyword arguments are passed to the analyzer.
+Refer to the `analyze` documentation for more information on available keyword arguments.
+
+To customize the heatmapping style, first compute an explanation using `analyze`
+and then call [`heatmap`](@ref) on the explanation.
+"""
+function heatmap(input, analyzer::AbstractXAIMethod, analyze_args...; analyze_kwargs...)
+    expl = analyze(input, analyzer, analyze_args...; analyze_kwargs...)
+    return heatmap(expl)
 end

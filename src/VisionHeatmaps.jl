@@ -7,9 +7,9 @@ using ImageCore
 using XAIBase: Explanation, AbstractXAIMethod, analyze
 using Configurations: @option
 
-include("heatmap.jl")
-include("overlay.jl")
-include("xaibase.jl")
+include("config.jl")  # HeatmapOptions
+include("heatmap.jl") # heatmap
+include("overlay.jl") # heatmap_overlay
 
 export heatmap, heatmap_overlay
 
