@@ -5,6 +5,7 @@ using ImageTransformations: imresize
 using Interpolations: Lanczos
 using ImageCore
 using XAIBase: Explanation, AbstractXAIMethod, analyze
+using Configurations: @option
 
 include("heatmap.jl")
 include("overlay.jl")
