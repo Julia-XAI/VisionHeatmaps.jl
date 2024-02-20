@@ -2,6 +2,19 @@ const DEFAULT_COLORSCHEME = :seismic
 const DEFAULT_REDUCE = :sum
 const DEFAULT_RANGESCALE = :centered
 
+@option struct HeatmapOptions
+    colorscheme::Union{ColorScheme,Symbol} = DEFAULT_COLORSCHEME
+    reduce::Symbol = DEFAULT_REDUCE
+    rangescale::Symbol = DEFAULT_RANGESCALE
+    permute::Bool = true
+    process_batch::Bool = false
+    unpack_singleton::Bool = true
+end
+
+get_colorscheme(options::HeatmapOptions) = get_colorscheme(options.colorscheme)
+get_colorscheme(c::ColorScheme) = c
+get_colorscheme(s::Symbol)::ColorScheme = colorschemes[s]
+
 """
     heatmap(x::AbstractArray)
 
@@ -23,37 +36,26 @@ Visualize 4D arrays as heatmaps, assuming the WHCN convention for input array di
 - `rangescale::Symbol`: Selects how the color channel reduced heatmap is normalized
   before the color scheme is applied. Can be either `:extrema` or `:centered`.
   Defaults to `:$DEFAULT_RANGESCALE`.
+- `permute::Bool`: Whether to flip W&H input channels. Default is `true`.
 - `process_batch::Bool`: When heatmapping a batch, setting `process_batch=true`
   will apply the `rangescale` normalization to the entire batch
   instead of computing it individually for each sample in the batch.
   Defaults to `false`.
-- `permute::Bool`: Whether to flip W&H input channels. Default is `true`.
 - `unpack_singleton::Bool`: If false, `heatmap` will always return a vector of images.
   When heatmapping a batch with a single sample, setting `unpack_singleton=true`
   will unpack the singleton vector and directly return the image. Defaults to `true`.
 """
-function heatmap(
-    val::AbstractArray{T,N};
-    colorscheme::Union{ColorScheme,Symbol}=DEFAULT_COLORSCHEME,
-    reduce::Symbol=DEFAULT_REDUCE,
-    rangescale::Symbol=DEFAULT_RANGESCALE,
-    permute::Bool=true,
-    unpack_singleton::Bool=true,
-    process_batch::Bool=false,
-) where {T,N}
+heatmap(val; kwargs...) = heatmap(val, HeatmapOptions(; kwargs...))
+function heatmap(val::AbstractArray{T,N}, options::HeatmapOptions) where {T,N}
     N != 4 && throw(InputDimensionError)
-    colorscheme = get_colorscheme(colorscheme)
-    if unpack_singleton && size(val, 4) == 1
-        return single_heatmap(val[:, :, :, 1], colorscheme, reduce, rangescale, permute)
+    if options.unpack_singleton && size(val, 4) == 1
+        return single_heatmap(val[:, :, :, 1], options)
     end
-    if process_batch
-        hs = single_heatmap(val, colorscheme, reduce, rangescale, permute)
+    if options.process_batch
+        hs = single_heatmap(val, options)
         return [hs[:, :, i] for i in axes(hs, 3)]
     end
-    return [
-        single_heatmap(v, colorscheme, reduce, rangescale, permute) for
-        v in eachslice(val; dims=4)
-    ]
+    return [single_heatmap(v, options) for v in eachslice(val; dims=4)]
 end
 
 const InputDimensionError = ArgumentError(
@@ -61,16 +63,12 @@ const InputDimensionError = ArgumentError(
     Please reshape your input to match this format if your model doesn't adhere to this convention.",
 )
 
-get_colorscheme(c::ColorScheme) = c
-get_colorscheme(s::Symbol)::ColorScheme = colorschemes[s]
-
 # Lower level function, mapped along batch dimension
-function single_heatmap(
-    val, colorscheme::ColorScheme, reduce::Symbol, rangescale::Symbol, permute::Bool
-)
-    img = dropdims(reduce_color_channel(val, reduce); dims=3)
-    permute && (img = flip_wh(img))
-    return get(colorscheme, img, rangescale)
+function single_heatmap(val, options::HeatmapOptions)
+    img = dropdims(reduce_color_channel(val, options.reduce); dims=3)
+    options.permute && (img = flip_wh(img))
+    cs = get_colorscheme(options)
+    return get(cs, img, options.rangescale)
 end
 
 flip_wh(img::AbstractArray{T,2}) where {T} = permutedims(img, (2, 1))
