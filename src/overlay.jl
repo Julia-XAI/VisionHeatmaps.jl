@@ -11,7 +11,9 @@ Assumes 4D input array following the WHCN convention
 (width, height, color channels, batch dimension) and batch size 1.
 
 ## Keyword arguments
-- `alpha::Real`: Opacity of the heatmap overlay. Defaults to `$DEFAULT_OVERLAY_ALPHA`.
+- `alpha`: Opacity of the heatmap overlay. Defaults to `$DEFAULT_OVERLAY_ALPHA`.
+    If an array is passed, it will be broadcast with the image and heatmap.
+    All alpha values are expected to be between 0 and 1.
 - `resize_method`: Method used to resize the heatmap in case of a size mismatch with the image.
     Defaults to `Lanczos(1)` from Interpolations.jl.
 
@@ -32,7 +34,7 @@ end
 function heatmap_overlay(
     val::AbstractArray{T,N},
     im::AbstractImage,
-    alpha::Real,
+    alpha,
     resize_method,
     options::HeatmapOptions,
 ) where {T,N}
@@ -44,7 +46,7 @@ function heatmap_overlay(
             ),
         )
     end
-    if alpha < 0 || alpha > 1
+    if any(<(0), alpha) || any(>(1), alpha)
         throw(ArgumentError("alpha must be in the range [0, 1]"))
     end
 
@@ -54,7 +56,7 @@ function heatmap_overlay(
     if hmsize != imsize
         hm = imresize(hm, imsize; method=resize_method)
     end
-    return im * (1 - alpha) + hm * alpha
+    return @. im * (1 - alpha) + hm * alpha
 end
 
 #=================#
