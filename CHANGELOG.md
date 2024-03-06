@@ -1,8 +1,10 @@
 # VisionHeatmaps.jl
+## Version `v1.5.0`
+* ![Feature][badge-feature] Allow alpha maps in `heatmap_overlay` ([#11][pr-11])
+
 ## Version `v1.4.0`
 * ![Feature][badge-feature] Add heatmap overlays on Explanations ([#10][pr-10])
 * ![Maintenance][badge-maintenance] Use Configurations.jl for keyword argument handling ([#9][pr-9])
-
 
 ## Version `v1.3.1`
 * ![Feature][badge-feature] Add XAIBase dependency ([#7][pr-7], [#8][pr-8])
@@ -17,6 +19,7 @@
 ## Version `v1.0.0`
 * Initial release
 
+[pr-11]: https://github.com/Julia-XAI/VisionHeatmaps.jl/pull/11
 [pr-10]: https://github.com/Julia-XAI/VisionHeatmaps.jl/pull/10
 [pr-9]: https://github.com/Julia-XAI/VisionHeatmaps.jl/pull/9
 [pr-8]: https://github.com/Julia-XAI/VisionHeatmaps.jl/pull/8
