@@ -1,7 +1,7 @@
 name = "VisionHeatmaps"
 uuid = "27106da1-f8bc-4ca8-8c66-9b8289f1e035"
 authors = ["Adrian Hill <gh@adrianhill.de>"]
-version = "1.4.0"
+version = "1.5.0-DEV"
 
 [deps]
 ColorSchemes = "35d6a980-a343-548e-a6ea-1d62b119f2f4"

@@ -70,6 +70,27 @@ end
     end
 end
 
+@testset "Overlay alpha masks" begin
+    alpha = 0.2
+    ho = heatmap_overlay(A, img2; alpha=alpha)
+    @test size(ho) == size(img2)
+    @test_reference "references/overlay_alpha/scalar.txt" ho
+
+    alpha = [(x + y) / 2 for x in 0:0.2:1, y in 0:0.2:1]
+    ho = heatmap_overlay(A, img2; alpha=alpha)
+    @test size(ho) == size(img2)
+    @test_reference "references/overlay_alpha/matrix.txt" ho
+
+    alpha = fill!(alpha, 0.2)
+    ho = heatmap_overlay(A, img2; alpha=alpha)
+    @test size(ho) == size(img2)
+    @test_reference "references/overlay_alpha/scalar.txt" ho
+
+    alpha[2, 2] = 1.1
+    @test_throws ArgumentError heatmap_overlay(A, img2; alpha=alpha)
+    @test_throws ArgumentError heatmap_overlay(A, img2; alpha=-0.1)
+end
+
 @testset "Batched input" begin
     for reducer in reducers
         for rangescale in rangescales
