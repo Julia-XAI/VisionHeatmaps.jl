@@ -3,9 +3,9 @@ using XAIBase
 
 shape = (2, 2, 3, 1)
 A = reshape(collect(Float32, 1:prod(shape)), shape)
-val = output = reshape(collect(Float32, 1:prod(shape)), shape)
+val = output = input = reshape(collect(Float32, 1:prod(shape)), shape)
 output_selection = [[CartesianIndex(1, 2)]] # irrelevant
-expl = Explanation(val, output, output_selection, :DummyAnalyzer, :attribution)
+expl = Explanation(val, input, output, output_selection, :DummyAnalyzer, :attribution)
 
 shape = (2, 2, 3, 2)
 batch = reshape(collect(Float32, 1:prod(shape)), shape)

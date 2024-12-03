@@ -1,18 +1,34 @@
 using XAIBase
+using Test
+
+using XAIBase: AbstractXAIMethod
+import XAIBase: call_analyzer
+
+struct DummyAnalyzer <: AbstractXAIMethod end
+function call_analyzer(
+    input, ::DummyAnalyzer, output_selector::AbstractOutputSelector; kwargs...
+)
+    output = input
+    output_selection = output_selector(output)
+    batchsize = size(input)[end]
+    v = reshape(output[output_selection], :, batchsize)
+    val = input .* v
+    return Explanation(val, input, output, output_selection, :Dummy, :attribution)
+end
 
 shape = (2, 2, 3, 1)
-val = output = reshape(collect(Float32, 1:prod(shape)), shape)
+val = output = input = reshape(collect(Float32, 1:prod(shape)), shape)
 output_selection = [[CartesianIndex(1, 2)]] # irrelevant
 img = [RGB(1, 0, 0) RGB(0, 1, 0); RGB(0, 0, 1) RGB(1, 1, 1)]
 
 @testset "Heatmapping presets" begin
-    expl = Explanation(val, output, output_selection, :DummyAnalyzer, :attribution)
+    expl = Explanation(val, input, output, output_selection, :DummyAnalyzer, :attribution)
     h = heatmap(expl)
     @test_reference "references/seismic_sum_centered.txt" h
-    expl = Explanation(val, output, output_selection, :DummyAnalyzer, :sensitivity)
+    expl = Explanation(val, input, output, output_selection, :DummyAnalyzer, :sensitivity)
     h = heatmap(expl)
     @test_reference "references/grays_norm_extrema.txt" h
-    expl = Explanation(val, output, output_selection, :DummyAnalyzer, :cam)
+    expl = Explanation(val, input, output, output_selection, :DummyAnalyzer, :cam)
     h = heatmap(expl)
     @test_reference "references/jet_sum_extrema.txt" h
 end
@@ -22,13 +38,13 @@ end
     val = output = reshape(collect(Float32, 1:prod(shape)), shape)
     output_selection = [[CartesianIndex(1, 2)]] # irrelevant
 
-    expl = Explanation(val, output, output_selection, :DummyAnalyzer, :attribution)
+    expl = Explanation(val, input, output, output_selection, :DummyAnalyzer, :attribution)
     ho = heatmap_overlay(expl, img)
     @test_reference "references/overlay/seismic_sum_centered.txt" ho
-    expl = Explanation(val, output, output_selection, :DummyAnalyzer, :sensitivity)
+    expl = Explanation(val, input, output, output_selection, :DummyAnalyzer, :sensitivity)
     ho = heatmap_overlay(expl, img)
     @test_reference "references/overlay/grays_norm_extrema.txt" ho
-    expl = Explanation(val, output, output_selection, :DummyAnalyzer, :cam)
+    expl = Explanation(val, input, output, output_selection, :DummyAnalyzer, :cam)
     ho = heatmap_overlay(expl, img)
     @test_reference "references/overlay/jet_sum_extrema.txt" ho
 end
@@ -36,7 +52,7 @@ end
 @testset "Batched input" begin
     val = output = reshape(1:(2^4), 2, 2, 2, 2)
     output_selection = [CartesianIndex(1, 2), CartesianIndex(3, 4)] # irrelevant
-    expl_batch = Explanation(val, output, output_selection, :LRP, :attribution)
+    expl_batch = Explanation(val, input, output, output_selection, :LRP, :attribution)
 
     h1 = heatmap(expl_batch)
     h2 = heatmap(expl_batch; process_batch=true)
@@ -45,16 +61,6 @@ end
 end
 
 @testset "Direct Analyzer call" begin
-    struct DummyAnalyzer <: AbstractXAIMethod end
-    function (method::DummyAnalyzer)(input, output_selector::AbstractOutputSelector)
-        output = input
-        output_selection = output_selector(output)
-        batchsize = size(input)[end]
-        v = reshape(output[output_selection], :, batchsize)
-        val = input .* v
-        return Explanation(val, output, output_selection, :Dummy, :attribution)
-    end
-
     analyzer = DummyAnalyzer()
     input = reshape([1 6 2 5 3 4], 2, 3, 1, 1)
     val = reshape([3 36 6 30 9 24], 2, 3, 1, 1) # Explanation for max activation
