@@ -1,6 +1,6 @@
 module VisionHeatmaps
 
-using ColorSchemes: ColorScheme, get, RdBu, viridis, jet
+using ColorSchemes: ColorScheme, colorschemes, get, RdBu, viridis, jet
 using ImageTransformations: imresize
 using Interpolations: Lanczos
 using ImageCore
