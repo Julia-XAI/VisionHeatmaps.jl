@@ -1,7 +1,7 @@
 name = "VisionHeatmaps"
 uuid = "27106da1-f8bc-4ca8-8c66-9b8289f1e035"
 authors = ["Adrian Hill <gh@adrianhill.de>"]
-version = "1.5.1"
+version = "1.6.0-DEV"
 
 [deps]
 ColorSchemes = "35d6a980-a343-548e-a6ea-1d62b119f2f4"
@@ -17,5 +17,5 @@ Configurations = "0.17"
 ImageCore = "0.9, 0.10"
 ImageTransformations = "0.10"
 Interpolations = "0.15"
-XAIBase = "3,4"
+XAIBase = "3, 4"
 julia = "1.6"

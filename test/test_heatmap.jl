@@ -1,11 +1,16 @@
-using ImageCore
+using VisionHeatmaps
 using XAIBase
+using ImageCore
+using ColorSchemes
+
+using Test
+using ReferenceTests
 
 shape = (2, 2, 3, 1)
 A = reshape(collect(Float32, 1:prod(shape)), shape)
-val = output = reshape(collect(Float32, 1:prod(shape)), shape)
+val = output = input = reshape(collect(Float32, 1:prod(shape)), shape)
 output_selection = [[CartesianIndex(1, 2)]] # irrelevant
-expl = Explanation(val, output, output_selection, :DummyAnalyzer, :attribution)
+expl = Explanation(val, input, output, output_selection, :DummyAnalyzer, :attribution)
 
 shape = (2, 2, 3, 2)
 batch = reshape(collect(Float32, 1:prod(shape)), shape)
@@ -13,7 +18,7 @@ batch = reshape(collect(Float32, 1:prod(shape)), shape)
 img = [RGB(1, 0, 0) RGB(0, 1, 0); RGB(0, 0, 1) RGB(1, 1, 1)]
 img2 = [RGB(x, y, 0) for x in 0:0.2:1, y in 0:0.2:1]
 
-colorschemes = [:seismic, :grays, :jet]
+colorschemes = [:seismic, :viridis, :jet]
 reducers = [:sum, :maxabs, :norm, :sumabs, :abssum]
 rangescales = [:extrema, :centered]
 
@@ -95,19 +100,19 @@ end
     for reducer in reducers
         for rangescale in rangescales
             h = heatmap(batch; reduce=reducer, rangescale=rangescale)
-            @test_reference "references/heatmap/seismic_$(reducer)_$(rangescale).txt" h[1]
-            @test_reference "references/heatmap/seismic_$(reducer)_$(rangescale)_2.txt" h[2]
+            @test_reference "references/heatmap/viridis_$(reducer)_$(rangescale).txt" h[1]
+            @test_reference "references/heatmap/viridis_$(reducer)_$(rangescale)_2.txt" h[2]
         end
     end
 end
 
 @testset "ColorSchemes" begin
     h = heatmap(A; colorscheme=ColorSchemes.inferno)
-    @test_reference "references/heatmap/inferno_sum_centered.txt" h
+    @test_reference "references/heatmap/inferno_norm_extrema.txt" h
 
     # Test colorscheme symbols
     h = heatmap(A; colorscheme=:inferno)
-    @test_reference "references/heatmap/inferno_sum_centered.txt" h
+    @test_reference "references/heatmap/inferno_norm_extrema.txt" h
 
     ho = heatmap_overlay(A, img; colorscheme=:inferno)
     @test_reference "references/overlay/inferno_sum_centered.txt" ho
@@ -136,7 +141,7 @@ end
 end
 
 @testset "Process batch" begin
-    A = reshape(1:(2^4), 2, 2, 2, 2)
+    A = reshape(1.0:(2.0^4), 2, 2, 2, 2)
     h1 = heatmap(A)
     h2 = heatmap(A; process_batch=true)
     @test_reference "references/process_batch_false.txt" h1

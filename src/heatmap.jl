@@ -1,7 +1,3 @@
-const DEFAULT_COLORSCHEME = :seismic
-const DEFAULT_REDUCE = :sum
-const DEFAULT_RANGESCALE = :centered
-
 const InputDimensionError = ArgumentError(
     "heatmap assumes the WHCN convention for input array dimensions (width, height, color channels, batch dimension).
     Please reshape your input to match this format if your model doesn't adhere to this convention.",
@@ -15,7 +11,7 @@ Visualize 4D arrays as heatmaps, assuming the WHCN convention for input array di
 
 ## Keyword arguments
 - `colorscheme::Union{ColorScheme,Symbol}`: Color scheme from ColorSchemes.jl.
-  Defaults to `seismic`.
+  Defaults to `viridis`.
 - `reduce::Symbol`: Selects how color channels are reduced to a single number to apply a color scheme.
   The following methods can be selected, which are then applied over the color channels
   for each "pixel" in the array:
@@ -38,6 +34,7 @@ Visualize 4D arrays as heatmaps, assuming the WHCN convention for input array di
   will unpack the singleton vector and directly return the image. Defaults to `true`.
 """
 heatmap(val; kwargs...) = heatmap(val, HeatmapOptions(; kwargs...))
+
 function heatmap(val::AbstractArray{T,N}, options::HeatmapOptions) where {T,N}
     N != 4 && throw(InputDimensionError)
     if options.unpack_singleton && size(val, 4) == 1

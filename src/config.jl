@@ -1,9 +1,14 @@
-const DEFAULT_COLORSCHEME = :seismic
-const DEFAULT_REDUCE = :sum
-const DEFAULT_RANGESCALE = :centered
+const DEFAULT_REDUCE = :norm
+const DEFAULT_RANGESCALE = :extrema
+const DEFAULT_COLORSCHEME_SENSITIVITY = viridis
+
+const DEFAULT_COLORSCHEME_CAM = jet
+const DEFAULT_COLORSCHEME_ATTRIBUTION = ColorScheme(
+    get(RdBu, range(1.0, 0.0; length=length(RdBu)))
+) # flip to BuRd
 
 @option struct HeatmapOptions
-    colorscheme::Union{ColorScheme,Symbol} = DEFAULT_COLORSCHEME
+    colorscheme::Union{ColorScheme,Symbol} = DEFAULT_COLORSCHEME_SENSITIVITY
     reduce::Symbol = DEFAULT_REDUCE
     rangescale::Symbol = DEFAULT_RANGESCALE
     permute::Bool = true
@@ -20,14 +25,16 @@ get_colorscheme(s::Symbol)::ColorScheme = colorschemes[s]
 #=================#
 
 const HEATMAP_PRESETS = Dict{
-    Symbol,@NamedTuple{colorscheme::Symbol, reduce::Symbol, rangescale::Symbol}
+    Symbol,@NamedTuple{colorscheme::ColorScheme, reduce::Symbol, rangescale::Symbol}
 }(
-    :attribution => (colorscheme=:seismic, reduce=:sum, rangescale=:centered),
-    :sensitivity => (colorscheme=:grays, reduce=:norm, rangescale=:extrema),
-    :cam         => (colorscheme=:jet, reduce=:sum, rangescale=:extrema),
+    :attribution => (colorscheme=DEFAULT_COLORSCHEME_ATTRIBUTION, reduce=:sum, rangescale=:centered),
+    :sensitivity => (colorscheme=DEFAULT_COLORSCHEME_SENSITIVITY, reduce=:norm, rangescale=:extrema),
+    :cam         => (colorscheme=DEFAULT_COLORSCHEME_CAM, reduce=:sum, rangescale=:extrema),
 )
 const DEFAULT_HEATMAP_PRESET = (
-    colorscheme=DEFAULT_COLORSCHEME, reduce=DEFAULT_REDUCE, rangescale=DEFAULT_RANGESCALE
+    colorscheme=DEFAULT_COLORSCHEME_SENSITIVITY,
+    reduce=DEFAULT_REDUCE,
+    rangescale=DEFAULT_RANGESCALE,
 )
 
 # Override HeatmapOptions preset with keyword arguments
