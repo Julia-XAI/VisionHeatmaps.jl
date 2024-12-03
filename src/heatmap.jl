@@ -11,7 +11,7 @@ Visualize 4D arrays as heatmaps, assuming the WHCN convention for input array di
 
 ## Keyword arguments
 - `colorscheme::Union{ColorScheme,Symbol}`: Color scheme from ColorSchemes.jl.
-  Defaults to `seismic`.
+  Defaults to `viridis`.
 - `reduce::Symbol`: Selects how color channels are reduced to a single number to apply a color scheme.
   The following methods can be selected, which are then applied over the color channels
   for each "pixel" in the array:

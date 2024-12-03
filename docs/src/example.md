@@ -44,7 +44,7 @@ heatmap(val; colorscheme=ColorSchemes.jet)
 ```
 
 ```@example 1
-heatmap(val; colorscheme=ColorSchemes.inferno)
+heatmap(val; colorscheme=ColorSchemes.viridis)
 ```
 
 Refer to the [ColorSchemes.jl catalogue](https://juliagraphics.github.io/ColorSchemes.jl/stable/basics/)
@@ -82,7 +82,7 @@ For this purpose, two presets are available through the `rangescale` keyword arg
   Values of zero will be mapped to the center of the color scheme.
 
 Depending on the color scheme, one of these presets may be more suitable than the other.
-The default color scheme, `seismic`, is centered around zero,
+For example, the color scheme `seismic` is centered around zero, 
 making `:centered` a good choice:
 
 ````@example 1
@@ -96,17 +96,16 @@ With centered color schemes such as `seismic`,
 heatmap(val; rangescale=:extrema)
 ````
 
-However, for the `inferno` color scheme, which is not centered around zero,
+However, for the default `viridis` color scheme, which is not centered around zero,
 `:extrema` can lead to a heatmap with higher contrast.
 
 ````@example 1
-heatmap(val; colorscheme=ColorSchemes.inferno, rangescale=:centered)
+heatmap(val; colorscheme=ColorSchemes.viridis, rangescale=:extrema)
 ````
 
 ````@example 1
-heatmap(val; colorscheme=ColorSchemes.inferno, rangescale=:extrema)
+heatmap(val; colorscheme=ColorSchemes.viridis, rangescale=:centered)
 ````
-
 
 For the full list of `heatmap` keyword arguments, refer to the [`heatmap`](@ref) documentation.
 
@@ -140,7 +139,7 @@ heatmap(val_batch)
 These heatmaps can be customized as usual:
 
 ```@example 1
-heatmap(val_batch; colorscheme=ColorSchemes.inferno, rangescale=:extrema)
+heatmap(val_batch; colorscheme=ColorSchemes.viridis, rangescale=:extrema)
 ```
 
 ### Processing batches
@@ -156,7 +155,7 @@ heatmap(val_batch; process_batch=true)
 ```
 
 ```@example 1
-heatmap(val_batch; colorscheme=ColorSchemes.inferno, rangescale=:extrema, process_batch=true)
+heatmap(val_batch; colorscheme=ColorSchemes.viridis, rangescale=:extrema, process_batch=true)
 ```
 
 ### Consistent output types
