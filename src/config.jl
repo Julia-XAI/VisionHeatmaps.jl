@@ -1,11 +1,9 @@
 const DEFAULT_REDUCE = :norm
 const DEFAULT_RANGESCALE = :extrema
-const DEFAULT_COLORSCHEME_SENSITIVITY = viridis
+const DEFAULT_COLORSCHEME_SENSITIVITY = batlow
 
 const DEFAULT_COLORSCHEME_CAM = jet
-const DEFAULT_COLORSCHEME_ATTRIBUTION = ColorScheme(
-    get(RdBu, range(1.0, 0.0; length=length(RdBu)))
-) # flip to BuRd
+const DEFAULT_COLORSCHEME_ATTRIBUTION = berlin
 
 @option struct HeatmapOptions
     colorscheme::Union{ColorScheme,Symbol} = DEFAULT_COLORSCHEME_SENSITIVITY

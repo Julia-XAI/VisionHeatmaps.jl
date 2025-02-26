@@ -99,7 +99,7 @@ end
 @testset "Batched input" begin
     for reducer in reducers
         for rangescale in rangescales
-            h = heatmap(batch; reduce=reducer, rangescale=rangescale)
+            h = heatmap(batch; colorscheme=:viridis, reduce=reducer, rangescale=rangescale)
             @test_reference "references/heatmap/viridis_$(reducer)_$(rangescale).txt" h[1]
             @test_reference "references/heatmap/viridis_$(reducer)_$(rangescale)_2.txt" h[2]
         end
