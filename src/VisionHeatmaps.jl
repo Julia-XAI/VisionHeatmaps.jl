@@ -7,6 +7,13 @@ using ImageCore
 using XAIBase: Explanation, AbstractXAIMethod, analyze
 using Configurations: @option
 
+
+include("transform_pipeline.jl")
+include("transforms/reduction.jl")
+include("transforms/colormapping.jl")
+include("transforms/overlay.jl")
+include("transforms/flip.jl")
+
 include("config.jl")  # HeatmapOptions
 include("heatmap.jl") # heatmap
 include("overlay.jl") # heatmap_overlay
