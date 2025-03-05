@@ -51,7 +51,6 @@ compose(p::Pipeline, t::Transform) = Pipeline(p.transforms..., t)
 compose(t::Transform, p::Pipeline) = compose(t, p.transforms...)
 compose(p1::Pipeline, p2::Pipeline) = compose(p1.transforms..., p2.transforms...)
 
-
 function apply(pipeline::Pipeline, x, img)
     for transform in pipeline
         x = transform(x, img)

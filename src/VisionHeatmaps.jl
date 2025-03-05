@@ -7,9 +7,13 @@ using ImageCore
 using XAIBase: Explanation, AbstractXAIMethod, analyze
 using Configurations: @option
 
-
 include("transform_pipeline.jl")
+export Transform, Pipeline
+
 include("transforms/reduction.jl")
+export AbstractReduction
+export SumReduction, NormReduction, MaxAbsReduction, SumAbsReduction, AbsSumReduction
+
 include("transforms/colormapping.jl")
 include("transforms/overlay.jl")
 include("transforms/flip.jl")
