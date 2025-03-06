@@ -4,10 +4,13 @@
 Abstract supertype of all color channel reductions.
 """
 abstract type AbstractReduction <: AbstractTransformation end
-function apply(t::AbstractReduction, x::AbstractArray)
+
+# This default fallback (ab)uses callable structs to reduce code duplication.
+# It is more efficient to write custom `apply` methods, see `SumReduction`.
+function apply(reduction::AbstractReduction, x::AbstractArray)
     size(x, 3) == 1 && return x # nothing to reduce
-    init = zero(eltype(val))
-    return reduce(t, val; dims=3, init=init)
+    init = zero(eltype(x))
+    return reduce(reduction, x; dims=3, init=init)
 end
 
 """
