@@ -5,12 +5,14 @@ Abstract supertype of all color channel reductions.
 """
 abstract type AbstractReduction <: AbstractTransformation end
 
+reduce_dim3(f, x; kwargs...) = dropdims(reduce(f, x; dims=3, kwargs...); dims=3)
+
 # This default fallback (ab)uses callable structs to reduce code duplication.
 # It is more efficient to write custom `apply` methods, see `SumReduction`.
 function apply(reduction::AbstractReduction, x::AbstractArray)
     size(x, 3) == 1 && return x # nothing to reduce
     init = zero(eltype(x))
-    return reduce(reduction, x; dims=3, init=init)
+    return reduce_dim3(reduction, x; init=init)
 end
 
 """
@@ -27,7 +29,7 @@ struct NormReduction <: AbstractReduction end
 Computes `maximum(abs, x)` over color channels
 """
 struct MaxAbsReduction <: AbstractReduction end
-(::MaxAbsReduction)(cs...) = maximum(abs, cs)
+(::MaxAbsReduction)(cs...) = maximum(abs.(cs))
 
 """
     SumAbsReduction()
@@ -54,5 +56,5 @@ struct SumReduction <: AbstractReduction end
 
 function apply(::SumReduction, x::AbstractArray)
     size(x, 3) == 1 && return x # nothing to reduce
-    return reduce(+, val; dims=3)
+    return reduce_dim3(+, x)
 end

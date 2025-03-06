@@ -38,3 +38,5 @@ function apply(pipeline::Pipeline, x, img)
     end
     return x
 end
+
+DEFAULT_PIPELINE_SEQUENTIAL = NormReduction() |> SequentialColormap(:) |> FlipHW()
