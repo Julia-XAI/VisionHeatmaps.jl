@@ -1,9 +1,9 @@
 """
-   AbstractReduction <: Transform
+   AbstractReduction <: AbstractTransformation
 
 Abstract supertype of all color channel reductions.
 """
-abstract type AbstractReduction <: Transform end
+abstract type AbstractReduction <: AbstractTransformation end
 function apply(t::AbstractReduction, x::AbstractArray)
     size(x, 3) == 1 && return x # nothing to reduce
     init = zero(eltype(val))
@@ -15,7 +15,7 @@ end
     
 Computes 2-norm over color channels
 """
-struct NormReduction <: AbstractChannelReduction end
+struct NormReduction <: AbstractReduction end
 (::NormReduction)(cs...) = sqrt(sum(c .^ 2))
 
 """
@@ -23,7 +23,7 @@ struct NormReduction <: AbstractChannelReduction end
     
 Computes `maximum(abs, x)` over color channels
 """
-struct MaxAbsReduction <: AbstractChannelReduction end
+struct MaxAbsReduction <: AbstractReduction end
 (::MaxAbsReduction)(cs...) = maximum(abs, cs)
 
 """
@@ -31,7 +31,7 @@ struct MaxAbsReduction <: AbstractChannelReduction end
     
 Computes `sum(abs, x)` over color channels
 """
-struct SumAbsReduction <: AbstractChannelReduction end
+struct SumAbsReduction <: AbstractReduction end
 (::SumAbsReduction)(cs...) = sum(abs, cs)
 
 """
@@ -39,7 +39,7 @@ struct SumAbsReduction <: AbstractChannelReduction end
     
 Computes `abs(sum(x))` the color channels
 """
-struct AbsSumReduction <: AbstractChannelReduction end
+struct AbsSumReduction <: AbstractReduction end
 (::SumAbsReduction)(cs...) = abs(sum, cs)
 
 """
@@ -47,7 +47,7 @@ struct AbsSumReduction <: AbstractChannelReduction end
 
 Sums up color channels.
 """
-struct SumReduction <: AbstractChannelReduction end
+struct SumReduction <: AbstractReduction end
 
 function apply(::SumReduction, x::AbstractArray)
     size(x, 3) == 1 && return x # nothing to reduce
