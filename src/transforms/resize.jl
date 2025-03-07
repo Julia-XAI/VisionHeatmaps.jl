@@ -19,3 +19,5 @@ function apply(t::ResizeToImage, x, img)
     hsize == isize && return x
     return imresize(x, isize; method=t.method)
 end
+
+apply(::ResizeToImage, x, ::Nothing) = x # skip if there is no image

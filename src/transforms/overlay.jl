@@ -32,3 +32,5 @@ function apply(t::AlphaOverlay, x, img)
 
     return @. img * (1 - t.alpha) + x * t.alpha
 end
+
+apply(::AlphaOverlay, x, ::Nothing) = x # skip if there is no image

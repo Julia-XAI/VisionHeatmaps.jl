@@ -7,6 +7,8 @@ using ImageCore
 using XAIBase: Explanation, AbstractXAIMethod, analyze
 using Configurations: @option
 
+const AbstractImage{T<:Union{Number,Colorant}} = AbstractArray{T,2}
+
 include("transforms/interface.jl")
 export AbstractTransform
 include("transforms/reduction.jl")
