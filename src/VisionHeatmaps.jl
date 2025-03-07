@@ -17,7 +17,7 @@ export NormReduction, SumReduction, MaxAbsReduction, SumAbsReduction, AbsSumRedu
 include("transforms/dimensions.jl")
 export FlipWH, PermuteDims, DropDims
 include("transforms/colormaps.jl")
-export SequentialColormap, DivergentColormap
+export ExtremaColormap, CenteredColormap
 include("transforms/resize.jl")
 export ResizeToImage
 include("transforms/overlay.jl")

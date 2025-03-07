@@ -3,49 +3,49 @@
 # ChannelwiseColorMap(colorschemes, rangescales) 
 
 """
-    SequentialColormap(name::Symbol)
-    SequentialColormap(name::Symbol, colorscheme)
+    ExtremaColormap(name::Symbol)
+    ExtremaColormap(name::Symbol, colorscheme)
 
 Apply a sequential `colorscheme` from ColorSchemes.jl, turning an array of values into an image.
 Defaults to `:batlow`.
 """
-struct SequentialColormap <: AbstractTransform
+struct ExtremaColormap <: AbstractTransform
     name::Symbol
     colorscheme::ColorScheme
 end
-SequentialColormap(name::Symbol) = SequentialColormap(name, colorschemes[name])
-SequentialColormap() = SequentialColormap(:batlow)
+ExtremaColormap(name::Symbol) = ExtremaColormap(name, colorschemes[name])
+ExtremaColormap() = ExtremaColormap(:batlow)
 
-function Base.show(io::IO, ::MIME"text/plain", t::SequentialColormap)
-    print(io, "SequentialColormap(:$(t.name))")
+function Base.show(io::IO, ::MIME"text/plain", t::ExtremaColormap)
+    print(io, "ExtremaColormap(:$(t.name))")
 end
-function Base.show(io::IO, t::SequentialColormap)
-    print(io, "SequentialColormap(:$(t.name))")
+function Base.show(io::IO, t::ExtremaColormap)
+    print(io, "ExtremaColormap(:$(t.name))")
 end
 
-apply(t::SequentialColormap, x) = get(t.colorscheme, x, :extrema)
+apply(t::ExtremaColormap, x) = get(t.colorscheme, x, :extrema)
 
 """
-    DivergentColormap(name::Symbol)
-    DivergentColormap(name::Symbol, colorscheme)
+    CenteredColormap(name::Symbol)
+    CenteredColormap(name::Symbol, colorscheme)
 
 Apply a divergent `colorscheme` from ColorSchemes.jl, turning an array of values into an image.
 Defaults to `:berlin`.
 """
-struct DivergentColormap <: AbstractTransform
+struct CenteredColormap <: AbstractTransform
     name::Symbol
     colorscheme::ColorScheme
 end
-DivergentColormap(name::Symbol) = DivergentColormap(name, colorschemes[name])
-DivergentColormap() = DivergentColormap(:berlin)
+CenteredColormap(name::Symbol) = CenteredColormap(name, colorschemes[name])
+CenteredColormap() = CenteredColormap(:berlin)
 
-function Base.show(io::IO, ::MIME"text/plain", t::DivergentColormap)
-    print(io, "DivergentColormap(:$(t.name))")
+function Base.show(io::IO, ::MIME"text/plain", t::CenteredColormap)
+    print(io, "CenteredColormap(:$(t.name))")
 end
-function Base.show(io::IO, t::DivergentColormap)
-    print(io, "DivergentColormap(:$(t.name))")
+function Base.show(io::IO, t::CenteredColormap)
+    print(io, "CenteredColormap(:$(t.name))")
 end
 
-apply(t::DivergentColormap, x) = get(t.colorscheme, x, :centered)
+apply(t::CenteredColormap, x) = get(t.colorscheme, x, :centered)
 
 # TODO: Implement channel-wise colormaps?

@@ -63,14 +63,10 @@ end
 # Presets for XAIBase support #
 #=============================#
 
-const DEFAULT_PIPELINE_SENSITIVITY = NormReduction() |> SequentialColormap() |> FlipWH()
-const DEFAULT_PIPELINE_ATTRIBUTION = NormReduction() |> DivergentColormap() |> FlipWH()
+const DEFAULT_PIPELINE_SENSITIVITY = NormReduction() |> ExtremaColormap() |> FlipWH()
+const DEFAULT_PIPELINE_ATTRIBUTION = NormReduction() |> CenteredColormap() |> FlipWH()
 const DEFAULT_PIPELINE_CAM =
-    SumReduction() |>
-    SequentialColormap(:jet) |>
-    FlipWH() |>
-    ResizeToImage() |>
-    AlphaOverlay()
+    SumReduction() |> ExtremaColormap(:jet) |> FlipWH() |> ResizeToImage() |> AlphaOverlay()
 const DEFAULT_PIPELINE = DEFAULT_PIPELINE_SENSITIVITY
 
 const PIPELINE_PRESETS = Dict(

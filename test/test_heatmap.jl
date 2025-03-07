@@ -18,7 +18,7 @@ batch = reshape(collect(Float32, 1:prod(shape)), shape)
 img = [RGB(1, 0, 0) RGB(0, 1, 0); RGB(0, 0, 1) RGB(1, 1, 1)]
 img2 = [RGB(x, y, 0) for x in 0:0.2:1, y in 0:0.2:1]
 
-rangscale2transform = Dict(:extrema => SequentialColormap, :centered => DivergentColormap)
+rangscale2transform = Dict(:extrema => ExtremaColormap, :centered => CenteredColormap)
 reducer2transform = Dict(
     :sum    => SumReduction,
     :maxabs => MaxAbsReduction,
@@ -110,13 +110,13 @@ end
 end
 
 @testset "ColorSchemes" begin
-    pipe = NormReduction() |> SequentialColormap(:inferno) |> FlipWH()
+    pipe = NormReduction() |> ExtremaColormap(:inferno) |> FlipWH()
     h = heatmap(A, pipe)
     @test_reference "references/heatmap/inferno_norm_extrema.txt" only(h)
 
     pipe =
         SumReduction() |>
-        DivergentColormap(:inferno) |>
+        CenteredColormap(:inferno) |>
         FlipWH() |>
         ResizeToImage() |>
         AlphaOverlay()
