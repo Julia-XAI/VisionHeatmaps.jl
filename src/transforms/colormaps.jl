@@ -3,32 +3,50 @@
 # ChannelwiseColorMap(colorschemes, rangescales) 
 
 """
-    SequentialColormap(colorscheme)
+    SequentialColormap(name::Symbol)
+    SequentialColormap(name::Symbol, colorscheme)
 
 Apply a sequential `colorscheme` from ColorSchemes.jl, turning an array of values into an image.
 Defaults to `:batlow`.
 """
 struct SequentialColormap <: AbstractTransform
+    name::Symbol
     colorscheme::ColorScheme
     # TODO: check if sequential
 end
-SequentialColormap(name::Symbol) = SequentialColormap(colorschemes[name])
-SequentialColormap() = SequentialColormap(batlow)
+SequentialColormap(name::Symbol) = SequentialColormap(name, colorschemes[name])
+SequentialColormap() = SequentialColormap(:batlow)
+
+function Base.show(io::IO, ::MIME"text/plain", t::SequentialColormap)
+    print(io, "SequentialColormap(:$(t.name))")
+end
+function Base.show(io::IO, t::SequentialColormap)
+    print(io, "SequentialColormap(:$(t.name))")
+end
 
 apply(t::SequentialColormap, x) = get(t.colorscheme, x, :extrema)
 
 """
-    DivergentColormap(colorscheme)
+    DivergentColormap(name::Symbol)
+    DivergentColormap(name::Symbol, colorscheme)
 
 Apply a divergent `colorscheme` from ColorSchemes.jl, turning an array of values into an image.
 Defaults to `:berlin`.
 """
 struct DivergentColormap <: AbstractTransform
+    name::Symbol
     colorscheme::ColorScheme
     # TODO: check if divergent
 end
-DivergentColormap(name::Symbol) = DivergentColormap(colorschemes[name])
-DivergentColormap() = DivergentColormap(berlin)
+DivergentColormap(name::Symbol) = DivergentColormap(name, colorschemes[name])
+DivergentColormap() = DivergentColormap(:berlin)
+
+function Base.show(io::IO, ::MIME"text/plain", t::DivergentColormap)
+    print(io, "DivergentColormap(:$(t.name))")
+end
+function Base.show(io::IO, t::DivergentColormap)
+    print(io, "DivergentColormap(:$(t.name))")
+end
 
 apply(t::DivergentColormap, x) = get(t.colorscheme, x, :centered)
 

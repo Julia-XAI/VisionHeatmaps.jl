@@ -1,24 +1,6 @@
 const DEFAULT_OVERLAY_ALPHA = 0.6
 
 """
-- `resize_method`: Method used to resize the heatmap in case of a size mismatch with the image.
-Defaults to `Lanczos(1)` from Interpolations.jl.
-
-Further keyword arguments are passed to `heatmap`.
-Refer to the [`heatmap`](@ref) documentation for more information.
-"""
-function heatmap_overlay(
-    val::AbstractArray{T,N},
-    im::AbstractImage;
-    alpha=DEFAULT_OVERLAY_ALPHA,
-    resize_method=DEFAULT_RESIZE_METHOD,
-    heatmap_kwargs...,
-) where {T,N}
-    options = HeatmapOptions(; heatmap_kwargs...)
-    return heatmap_overlay(val, im, alpha, resize_method, options)
-end
-
-"""
     AlphaOverlay()
     AlphaOverlay(alpha)
 

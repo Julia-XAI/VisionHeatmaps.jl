@@ -8,21 +8,23 @@ using XAIBase: Explanation, AbstractXAIMethod, analyze
 using Configurations: @option
 
 include("transforms/interface.jl")
-include("transforms/reduction.jl")
-include("transforms/dimensions.jl")
-include("transforms/colormaps.jl")
-include("transforms/overlay.jl")
 export AbstractTransform
+include("transforms/reduction.jl")
 export AbstractReduction
 export SumReduction, NormReduction, MaxAbsReduction, SumAbsReduction, AbsSumReduction
+include("transforms/dimensions.jl")
 export FlipWH, PermuteDims, DropDims
+include("transforms/colormaps.jl")
 export SequentialColormap, DivergentColormap
+include("transforms/resize.jl")
+export ResizeToImage
+include("transforms/overlay.jl")
+export AlphaOverlay
 
-include("pipeline.jl") # Combine Transforms
+include("pipeline.jl")
 export Pipeline
 
-include("heatmap.jl") # heatmap
-include("overlay.jl") # heatmap_overlay
-export heatmap, heatmap_overlay
+include("heatmap.jl")
+export heatmap
 
 end # module

@@ -49,12 +49,10 @@ end
 
 function Base.show(io::IO, pipe::Pipeline)
     println(io, "Pipeline(")
-    show_transforms(io, pipe.transforms)
+    for t in pipe.transforms
+        println(io, "  ", t, ",")
+    end
     print(io, ")")
-end
-
-function show_transforms(io, t::AbstractTransform)
-    show_transforms(io, ts::Tuple) = join(io, ts, ", ")
 end
 
 #=============================#
