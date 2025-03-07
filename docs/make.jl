@@ -16,6 +16,7 @@ makedocs(;
         size_threshold_ignore=["example.md"],
     ),
     pages=["Home" => "index.md", "Getting started" => "example.md"],
+    warnonly=[:missing_docs],
 )
 
 deploydocs(; repo="github.com/Julia-XAI/VisionHeatmaps.jl", devbranch="main")

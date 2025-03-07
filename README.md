@@ -6,7 +6,7 @@
 [![Coverage](https://codecov.io/gh/Julia-XAI/VisionHeatmaps.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/Julia-XAI/VisionHeatmaps.jl)
 [![Aqua](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
 
-VisionHeatmaps.jl is a lightweight Julia package for visualization of input space attributions for vision models.
+Julia package for visualization of input space attributions for vision models.
 
 ![image of saxophone](https://github.com/Julia-XAI/VisionHeatmaps.jl/blob/gh-pages/assets/img1.png)
 ![heatmap of saxophone](https://github.com/Julia-XAI/VisionHeatmaps.jl/blob/gh-pages/assets/heatmap1.png)

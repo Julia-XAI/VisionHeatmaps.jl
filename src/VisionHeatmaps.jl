@@ -1,16 +1,35 @@
 module VisionHeatmaps
 
-using ColorSchemes: ColorScheme, colorschemes, get, berlin, batlow, jet
+using Statistics: quantile
+using ColorSchemes: ColorScheme, colorschemes, get
 using ImageTransformations: imresize
 using Interpolations: Lanczos
 using ImageCore
 using XAIBase: Explanation, AbstractXAIMethod, analyze
 using Configurations: @option
 
-include("config.jl")  # HeatmapOptions
-include("heatmap.jl") # heatmap
-include("overlay.jl") # heatmap_overlay
+const AbstractImage{T<:Union{Number,Colorant}} = AbstractArray{T,2}
 
-export heatmap, heatmap_overlay
+include("transforms/interface.jl")
+export AbstractTransform
+include("transforms/reduction.jl")
+export AbstractReduction
+export NormReduction, SumReduction, MaxAbsReduction, SumAbsReduction, AbsSumReduction
+include("transforms/dimensions.jl")
+export FlipImage, PermuteDims, DropDims
+include("transforms/clamp.jl")
+export PercentileClip
+include("transforms/colormaps.jl")
+export ExtremaColormap, CenteredColormap
+include("transforms/resize.jl")
+export ResizeToImage
+include("transforms/overlay.jl")
+export AlphaOverlay
+
+include("pipeline.jl")
+export Pipeline
+
+include("heatmap.jl")
+export heatmap
 
 end # module

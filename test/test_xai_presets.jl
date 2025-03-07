@@ -26,13 +26,13 @@ img = [RGB(1, 0, 0) RGB(0, 1, 0); RGB(0, 0, 1) RGB(1, 1, 1)]
 @testset "Heatmapping presets" begin
     expl = Explanation(val, input, output, output_selection, :DummyAnalyzer, :attribution)
     h = heatmap(expl)
-    @test_reference "references/attribution.txt" h
+    @test_reference "references/attribution.txt" only(h)
     expl = Explanation(val, input, output, output_selection, :DummyAnalyzer, :sensitivity)
     h = heatmap(expl)
-    @test_reference "references/sensitivity.txt" h
+    @test_reference "references/sensitivity.txt" only(h)
     expl = Explanation(val, input, output, output_selection, :DummyAnalyzer, :cam)
     h = heatmap(expl)
-    @test_reference "references/cam.txt" h
+    @test_reference "references/cam.txt" only(h)
 end
 
 @testset "Overlay presets" begin
@@ -41,14 +41,14 @@ end
     output_selection = [[CartesianIndex(1, 2)]] # irrelevant
 
     expl = Explanation(val, input, output, output_selection, :DummyAnalyzer, :attribution)
-    ho = heatmap_overlay(expl, img)
-    @test_reference "references/overlay/attribution.txt" ho
+    ho = heatmap(expl, img)
+    @test_reference "references/overlay/attribution.txt" only(ho)
     expl = Explanation(val, input, output, output_selection, :DummyAnalyzer, :sensitivity)
-    ho = heatmap_overlay(expl, img)
-    @test_reference "references/overlay/sensitivity.txt" ho
+    ho = heatmap(expl, img)
+    @test_reference "references/overlay/sensitivity.txt" only(ho)
     expl = Explanation(val, input, output, output_selection, :DummyAnalyzer, :cam)
-    ho = heatmap_overlay(expl, img)
-    @test_reference "references/overlay/cam.txt" ho
+    ho = heatmap(expl, img)
+    @test_reference "references/overlay/cam.txt" only(ho)
 end
 
 @testset "Batched input" begin
@@ -59,9 +59,7 @@ end
     )
 
     h1 = heatmap(expl_batch)
-    h2 = heatmap(expl_batch; process_batch=true)
     @test_reference "references/process_batch_false.txt" h1
-    @test_reference "references/process_batch_true.txt" h2
 end
 
 @testset "Direct Analyzer call" begin
