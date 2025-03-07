@@ -12,11 +12,14 @@ const InputDimensionError = ArgumentError(
 Visualize 4D arrays as heatmaps, assuming the WHCN convention for input array dimensions
 (width, height, color channels, batch dimension).
 """
-function heatmap(x::AbstractArray{T,N}, img::AbstractImage, pipe::Pipeline) where {T,N}
+function heatmap(
+    x::AbstractArray{T,N}, img::Union{AbstractImage,Nothing}, pipe::Pipeline
+) where {T,N}
     N != 4 && throw(InputDimensionError)
     return [apply(pipe, s, img) for s in eachslice(x; dims=4)]
 end
 heatmap(x, pipeline::Pipeline) = heatmap(x, nothing, pipeline)
+heatmap(x) = heatmap(x, DEFAULT_PIPELINE)
 
 #=================#
 # XAIBase support #
@@ -31,7 +34,9 @@ Assumes WHCN convention (width, height, channels, batch dimension) for `explanat
 This will use the default heatmapping style for the given type of explanation.
 """
 heatmap(expl::Explanation) = heatmap(expl.val, nothing, Pipeline(expl))
-heatmap(expl::Explanation, img::AbstractImage) = heatmap(expl.val, img, Pipeline(expl))
+function heatmap(expl::Explanation, img::Union{AbstractImage,Nothing})
+    heatmap(expl.val, img, Pipeline(expl))
+end
 
 """
     heatmap(input::AbstractArray, analyzer::AbstractXAIMethod)
@@ -52,5 +57,6 @@ function heatmap(
     return heatmap(expl, img)
 end
 function heatmap(input, analyzer::AbstractXAIMethod, analyze_args...; analyze_kwargs...)
-    return heatmap(input, analyzer, nothing, analyze_args...; analyze_kwargs...)
+    expl = analyze(input, analyzer, analyze_args...; analyze_kwargs...)
+    return heatmap(expl, nothing)
 end

@@ -45,7 +45,7 @@ struct SumAbsReduction <: AbstractReduction end
 Computes `abs(sum(x))` the color channels
 """
 struct AbsSumReduction <: AbstractReduction end
-(::AbsSumReduction)(cs...) = abs(sum, cs)
+(::AbsSumReduction)(cs...) = abs(sum(cs))
 
 """
     SumReduction()
