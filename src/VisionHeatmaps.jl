@@ -1,6 +1,6 @@
 module VisionHeatmaps
 
-using ColorSchemes: ColorScheme, colorschemes, get, berlin, batlow, jet
+using ColorSchemes: ColorScheme, colorschemes, get
 using ImageTransformations: imresize
 using Interpolations: Lanczos
 using ImageCore

@@ -15,9 +15,13 @@ end
 Pipeline(ts...) = Pipeline(ts)
 Pipeline(t::AbstractTransform) = t
 
-function apply(pipeline::Pipeline, x, img)
-    for AbstractTransform in pipeline
-        x = AbstractTransform(x, img)
+#====================#
+# Applying pipelines #
+#====================#
+
+function apply(pipe::Pipeline, x, img)
+    for t in pipe.transforms
+        x = apply(t, x, img)
     end
     return x
 end
@@ -59,16 +63,22 @@ end
 # Presets for XAIBase support #
 #=============================#
 
-DEFAULT_PIPELINE_SENSITIVITY = NormReduction() |> SequentialColormap() |> FlipWH()
-DEFAULT_PIPELINE_ATTRIBUTION = NormReduction() |> DivergentColormap() |> FlipWH()
-# DEFAULT_PIPELINE_CAM = SumReduction() |> SequentialColormap(jet) |> FlipWH() |> Upscale() |> AlphaOverlay()
+const DEFAULT_PIPELINE_SENSITIVITY = NormReduction() |> SequentialColormap() |> FlipWH()
+const DEFAULT_PIPELINE_ATTRIBUTION = NormReduction() |> DivergentColormap() |> FlipWH()
+const DEFAULT_PIPELINE_CAM =
+    SumReduction() |>
+    SequentialColormap(:jet) |>
+    FlipWH() |>
+    ResizeToImage() |>
+    AlphaOverlay()
+const DEFAULT_PIPELINE = DEFAULT_PIPELINE_SENSITIVITY
 
-PIPELINE_PRESETS = Dict(
+const PIPELINE_PRESETS = Dict(
     :attribution => DEFAULT_PIPELINE_ATTRIBUTION,
     :sensitivity => DEFAULT_PIPELINE_SENSITIVITY,
-    # :cam         => DEFAULT_PIPELINE_CAM,
+    :cam         => DEFAULT_PIPELINE_CAM,
 )
 
 function Pipeline(expl::Explanation)
-    get(PIPELINE_PRESETS, expl.heatmap, DEFAULT_PIPELINE_SENSITIVITY)
+    get(PIPELINE_PRESETS, expl.heatmap, DEFAULT_PIPELINE)
 end

@@ -21,7 +21,7 @@ end
 Computes 2-norm over color channels
 """
 struct NormReduction <: AbstractReduction end
-(::NormReduction)(cs...) = sqrt(sum(c .^ 2))
+(::NormReduction)(cs...) = sqrt(sum(cs .^ 2))
 
 """
     MaxAbsReduction()

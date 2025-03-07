@@ -12,7 +12,6 @@ Defaults to `:batlow`.
 struct SequentialColormap <: AbstractTransform
     name::Symbol
     colorscheme::ColorScheme
-    # TODO: check if sequential
 end
 SequentialColormap(name::Symbol) = SequentialColormap(name, colorschemes[name])
 SequentialColormap() = SequentialColormap(:batlow)
@@ -36,7 +35,6 @@ Defaults to `:berlin`.
 struct DivergentColormap <: AbstractTransform
     name::Symbol
     colorscheme::ColorScheme
-    # TODO: check if divergent
 end
 DivergentColormap(name::Symbol) = DivergentColormap(name, colorschemes[name])
 DivergentColormap() = DivergentColormap(:berlin)
