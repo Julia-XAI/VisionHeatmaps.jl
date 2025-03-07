@@ -13,7 +13,7 @@ include("transforms/interface.jl")
 export AbstractTransform
 include("transforms/reduction.jl")
 export AbstractReduction
-export SumReduction, NormReduction, MaxAbsReduction, SumAbsReduction, AbsSumReduction
+export NormReduction, SumReduction, MaxAbsReduction, SumAbsReduction, AbsSumReduction
 include("transforms/dimensions.jl")
 export FlipWH, PermuteDims, DropDims
 include("transforms/colormaps.jl")
