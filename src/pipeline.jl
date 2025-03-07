@@ -4,7 +4,7 @@
 # Copyright (c) 2020 lorenzoh <lorenz.ohly@gmail.com>
 
 """
-Pipeline(transforms...)
+    Pipeline(transforms...)
 
 Heatmapping pipelines sequentially apply transforms.
 """

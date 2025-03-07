@@ -1,5 +1,6 @@
 module VisionHeatmaps
 
+using Statistics: quantile
 using ColorSchemes: ColorScheme, colorschemes, get
 using ImageTransformations: imresize
 using Interpolations: Lanczos
@@ -16,6 +17,8 @@ export AbstractReduction
 export NormReduction, SumReduction, MaxAbsReduction, SumAbsReduction, AbsSumReduction
 include("transforms/dimensions.jl")
 export FlipWH, PermuteDims, DropDims
+include("transforms/clamp.jl")
+export PercentileClip
 include("transforms/colormaps.jl")
 export ExtremaColormap, CenteredColormap
 include("transforms/resize.jl")
