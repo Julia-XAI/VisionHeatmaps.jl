@@ -39,9 +39,13 @@ rangescales = [:extrema, :centered]
                 Colormap = rangscale2transform[rangescale]
                 pipe = Reduction() |> Colormap(colorscheme) |> FlipWH()
                 h = heatmap(A, pipe)
-                @test_reference "references/heatmap/$(colorscheme)_$(reducer)_$(rangescale).txt" h
+                @test_reference "references/heatmap/$(colorscheme)_$(reducer)_$(rangescale).txt" only(
+                    h
+                )
                 h = heatmap(expl, pipe)
-                @test_reference "references/heatmap/$(colorscheme)_$(reducer)_$(rangescale).txt" h
+                @test_reference "references/heatmap/$(colorscheme)_$(reducer)_$(rangescale).txt" only(
+                    h
+                )
 
                 # Overlay
                 pipe =
@@ -51,11 +55,15 @@ rangescales = [:extrema, :centered]
                     ResizeToImage() |>
                     AlphaOverlay()
                 ho = heatmap(A, img, pipe)
-                @test size(ho) == size(img)
-                @test_reference "references/overlay/$(colorscheme)_$(reducer)_$(rangescale).txt" ho
+                @test size(only(ho)) == size(img)
+                @test_reference "references/overlay/$(colorscheme)_$(reducer)_$(rangescale).txt" only(
+                    ho
+                )
                 ho = heatmap(expl, img, pipe)
-                @test size(ho) == size(img)
-                @test_reference "references/overlay/$(colorscheme)_$(reducer)_$(rangescale).txt" ho
+                @test size(only(ho)) == size(img)
+                @test_reference "references/overlay/$(colorscheme)_$(reducer)_$(rangescale).txt" only(
+                    ho
+                )
             end
         end
     end
@@ -73,8 +81,10 @@ end
                     ResizeToImage() |>
                     AlphaOverlay()
                 ho = heatmap(A, img2, pipe)
-                @test size(ho) == size(img2)
-                @test_reference "references/overlay_rescaled/$(colorscheme)_$(reducer)_$(rangescale).txt" ho
+                @test size(only(ho)) == size(img2)
+                @test_reference "references/overlay_rescaled/$(colorscheme)_$(reducer)_$(rangescale).txt" only(
+                    ho
+                )
             end
         end
     end
@@ -102,7 +112,7 @@ end
 @testset "ColorSchemes" begin
     pipe = NormReduction() |> SequentialColormap(:inferno) |> FlipWH()
     h = heatmap(A, pipe)
-    @test_reference "references/heatmap/inferno_norm_extrema.txt" h
+    @test_reference "references/heatmap/inferno_norm_extrema.txt" only(h)
 
     pipe =
         SumReduction() |>
@@ -111,7 +121,7 @@ end
         ResizeToImage() |>
         AlphaOverlay()
     ho = heatmap(A, img, pipe)
-    @test_reference "references/overlay/inferno_sum_centered.txt" ho
+    @test_reference "references/overlay/inferno_sum_centered.txt" only(ho)
 end
 
 @testset "Error handling" begin

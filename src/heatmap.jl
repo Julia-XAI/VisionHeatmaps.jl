@@ -27,15 +27,21 @@ heatmap(x) = heatmap(x, DEFAULT_PIPELINE)
 
 """
     heatmap(expl::Explanation)
-    heatmap(expl::Explanation, image)
+    heatmap(expl::Explanation, pipeline)
+    heatmap(expl::Explanation, image)   
+    heatmap(expl::Explanation, image, pipeline)
 
 Visualize `Explanation` from XAIBase as a vision heatmap.
 Assumes WHCN convention (width, height, channels, batch dimension) for `explanation.val`.
 This will use the default heatmapping style for the given type of explanation.
 """
-heatmap(expl::Explanation) = heatmap(expl.val, nothing, Pipeline(expl))
+function heatmap(expl::Explanation, img::Union{AbstractImage,Nothing}, pipe::Pipeline)
+    heatmap(expl.val, img, pipe)
+end
+heatmap(expl::Explanation, pipe::Pipeline) = heatmap(expl, nothing, pipe)
+heatmap(expl::Explanation) = heatmap(expl, Pipeline(expl))
 function heatmap(expl::Explanation, img::Union{AbstractImage,Nothing})
-    heatmap(expl.val, img, Pipeline(expl))
+    heatmap(expl, img, Pipeline(expl))
 end
 
 """
