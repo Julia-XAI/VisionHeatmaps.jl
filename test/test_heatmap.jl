@@ -42,8 +42,6 @@ rangescales = [:extrema, :centered]
                 @test_reference "references/heatmap/$(colorscheme)_$(reducer)_$(rangescale).txt" h
                 h = heatmap(expl, pipe)
                 @test_reference "references/heatmap/$(colorscheme)_$(reducer)_$(rangescale).txt" h
-                hs = heatmap(A, pipe; unpack_singleton=false)
-                @test_reference "references/heatmap/$(colorscheme)_$(reducer)_$(rangescale).txt" hs[1]
 
                 # Overlay
                 pipe =
@@ -52,10 +50,10 @@ rangescales = [:extrema, :centered]
                     FlipWH() |>
                     ResizeToImage() |>
                     AlphaOverlay()
-                ho = heatmap_overlay(A, img, pipe)
+                ho = heatmap(A, img, pipe)
                 @test size(ho) == size(img)
                 @test_reference "references/overlay/$(colorscheme)_$(reducer)_$(rangescale).txt" ho
-                ho = heatmap_overlay(expl, img, pipe)
+                ho = heatmap(expl, img, pipe)
                 @test size(ho) == size(img)
                 @test_reference "references/overlay/$(colorscheme)_$(reducer)_$(rangescale).txt" ho
             end
@@ -74,7 +72,7 @@ end
                     FlipWH() |>
                     ResizeToImage() |>
                     AlphaOverlay()
-                ho = heatmap_overlay(A, img, pipe)
+                ho = heatmap(A, img2, pipe)
                 @test size(ho) == size(img2)
                 @test_reference "references/overlay_rescaled/$(colorscheme)_$(reducer)_$(rangescale).txt" ho
             end
@@ -117,8 +115,8 @@ end
 end
 
 @testset "Error handling" begin
-    @test_throws ArgumentError AlphaOverlay(2)
-    @test_throws ArgumentError AlphaOverlay(-1)
+    @test_throws DomainError AlphaOverlay(2.0)
+    @test_throws DomainError AlphaOverlay(-1.0)
 
     B = reshape(A, 2, 2, 3, 1, 1)
     @test_throws ArgumentError heatmap(B)

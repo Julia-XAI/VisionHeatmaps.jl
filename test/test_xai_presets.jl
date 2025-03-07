@@ -41,13 +41,13 @@ end
     output_selection = [[CartesianIndex(1, 2)]] # irrelevant
 
     expl = Explanation(val, input, output, output_selection, :DummyAnalyzer, :attribution)
-    ho = heatmap_overlay(expl, img)
+    ho = heatmap(expl, img)
     @test_reference "references/overlay/attribution.txt" ho
     expl = Explanation(val, input, output, output_selection, :DummyAnalyzer, :sensitivity)
-    ho = heatmap_overlay(expl, img)
+    ho = heatmap(expl, img)
     @test_reference "references/overlay/sensitivity.txt" ho
     expl = Explanation(val, input, output, output_selection, :DummyAnalyzer, :cam)
-    ho = heatmap_overlay(expl, img)
+    ho = heatmap(expl, img)
     @test_reference "references/overlay/cam.txt" ho
 end
 
@@ -59,9 +59,7 @@ end
     )
 
     h1 = heatmap(expl_batch)
-    h2 = heatmap(expl_batch; process_batch=true)
     @test_reference "references/process_batch_false.txt" h1
-    @test_reference "references/process_batch_true.txt" h2
 end
 
 @testset "Direct Analyzer call" begin
