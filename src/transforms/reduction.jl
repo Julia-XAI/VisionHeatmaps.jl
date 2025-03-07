@@ -1,9 +1,9 @@
 """
-   AbstractReduction <: AbstractTransformation
+   AbstractReduction <: AbstractTransform
 
 Abstract supertype of all color channel reductions.
 """
-abstract type AbstractReduction <: AbstractTransformation end
+abstract type AbstractReduction <: AbstractTransform end
 
 reduce_dim3(f, x; kwargs...) = dropdims(reduce(f, x; dims=3, kwargs...); dims=3)
 
@@ -45,7 +45,7 @@ struct SumAbsReduction <: AbstractReduction end
 Computes `abs(sum(x))` the color channels
 """
 struct AbsSumReduction <: AbstractReduction end
-(::SumAbsReduction)(cs...) = abs(sum, cs)
+(::AbsSumReduction)(cs...) = abs(sum, cs)
 
 """
     SumReduction()

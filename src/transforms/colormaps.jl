@@ -1,5 +1,4 @@
 
-
 # ColorMap(colorscheme, rangescale)
 # ChannelwiseColorMap(colorschemes, rangescales) 
 
@@ -9,7 +8,7 @@
 Apply a sequential `colorscheme` from ColorSchemes.jl, turning an array of values into an image.
 Defaults to `:batlow`.
 """
-struct SequentialColormap <: AbstractTransformation
+struct SequentialColormap <: AbstractTransform
     colorscheme::ColorScheme
     # TODO: check if sequential
 end
@@ -24,7 +23,7 @@ apply(t::SequentialColormap, x) = get(t.colorscheme, x, :extrema)
 Apply a divergent `colorscheme` from ColorSchemes.jl, turning an array of values into an image.
 Defaults to `:berlin`.
 """
-struct DivergentColormap <: AbstractTransformation
+struct DivergentColormap <: AbstractTransform
     colorscheme::ColorScheme
     # TODO: check if divergent
 end
@@ -32,6 +31,5 @@ DivergentColormap(name::Symbol) = DivergentColormap(colorschemes[name])
 DivergentColormap() = DivergentColormap(berlin)
 
 apply(t::DivergentColormap, x) = get(t.colorscheme, x, :centered)
-
 
 # TODO: Implement channel-wise colormaps?
