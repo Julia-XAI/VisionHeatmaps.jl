@@ -1,14 +1,14 @@
 """
-    FlipWH()
+    FlipImage()
 
 Permutes the width and height dimensions of an array.
 Assumes width and height are the leading directions in the array.
 """
-struct FlipWH <: AbstractTransform end
+struct FlipImage <: AbstractTransform end
 
-apply(::FlipWH, x::AbstractArray{T,2}) where {T} = permutedims(x, (2, 1))
-apply(::FlipWH, x::AbstractArray{T,3}) where {T} = permutedims(x, (2, 1, 3))
-apply(::FlipWH, x::AbstractArray{T,4}) where {T} = permutedims(x, (2, 1, 3, 4))
+apply(::FlipImage, x::AbstractArray{T,2}) where {T} = permutedims(x, (2, 1))
+apply(::FlipImage, x::AbstractArray{T,3}) where {T} = permutedims(x, (2, 1, 3))
+apply(::FlipImage, x::AbstractArray{T,4}) where {T} = permutedims(x, (2, 1, 3, 4))
 
 """
     PermuteDims(dims...)

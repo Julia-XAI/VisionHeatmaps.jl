@@ -37,7 +37,7 @@ rangescales = [:extrema, :centered]
             for rangescale in rangescales
                 Reduction = reducer2transform[reducer]
                 Colormap = rangscale2transform[rangescale]
-                pipe = Reduction() |> Colormap(colorscheme) |> FlipWH()
+                pipe = Reduction() |> Colormap(colorscheme) |> FlipImage()
                 h = heatmap(A, pipe)
                 @test_reference "references/heatmap/$(colorscheme)_$(reducer)_$(rangescale).txt" only(
                     h
@@ -51,7 +51,7 @@ rangescales = [:extrema, :centered]
                 pipe =
                     Reduction() |>
                     Colormap(colorscheme) |>
-                    FlipWH() |>
+                    FlipImage() |>
                     ResizeToImage() |>
                     AlphaOverlay()
                 ho = heatmap(A, img, pipe)
@@ -77,7 +77,7 @@ end
                 pipe =
                     Reduction() |>
                     Colormap(colorscheme) |>
-                    FlipWH() |>
+                    FlipImage() |>
                     ResizeToImage() |>
                     AlphaOverlay()
                 ho = heatmap(A, img2, pipe)
@@ -98,7 +98,7 @@ end
             pipe =
                 Reduction() |>
                 Colormap(:viridis) |>
-                FlipWH() |>
+                FlipImage() |>
                 ResizeToImage() |>
                 AlphaOverlay()
 
@@ -110,14 +110,14 @@ end
 end
 
 @testset "ColorSchemes" begin
-    pipe = NormReduction() |> ExtremaColormap(:inferno) |> FlipWH()
+    pipe = NormReduction() |> ExtremaColormap(:inferno) |> FlipImage()
     h = heatmap(A, pipe)
     @test_reference "references/heatmap/inferno_norm_extrema.txt" only(h)
 
     pipe =
         SumReduction() |>
         CenteredColormap(:inferno) |>
-        FlipWH() |>
+        FlipImage() |>
         ResizeToImage() |>
         AlphaOverlay()
     ho = heatmap(A, img, pipe)

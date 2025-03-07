@@ -16,7 +16,7 @@ include("transforms/reduction.jl")
 export AbstractReduction
 export NormReduction, SumReduction, MaxAbsReduction, SumAbsReduction, AbsSumReduction
 include("transforms/dimensions.jl")
-export FlipWH, PermuteDims, DropDims
+export FlipImage, PermuteDims, DropDims
 include("transforms/clamp.jl")
 export PercentileClip
 include("transforms/colormaps.jl")

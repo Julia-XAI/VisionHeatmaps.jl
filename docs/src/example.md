@@ -47,7 +47,7 @@ heatmap(x) |> only
 VisionHeatmaps internally applies a sequence of image transformations in what we call a [`Pipeline`](@ref).
 The default pipeline corresponds to: 
 ```@example 1
-pipe = NormReduction() |> ExtremaColormap() |> FlipWH()
+pipe = NormReduction() |> ExtremaColormap() |> FlipImage()
 ```
 
 We can apply this pipeline by passing it to `heatmap`:
@@ -67,12 +67,12 @@ For arrays with multiple color channels, the channels need to be reduced to a si
 whereas [`SumReduction`](@ref) takes the sum:
 
 ```@example 1
-pipe = NormReduction() |> ExtremaColormap() |> FlipWH()
+pipe = NormReduction() |> ExtremaColormap() |> FlipImage()
 heatmap(x, pipe) |> only
 ```
 
 ```@example 1
-pipe = SumReduction() |> ExtremaColormap() |> FlipWH()
+pipe = SumReduction() |> ExtremaColormap() |> FlipImage()
 heatmap(x, pipe) |> only
 ```
 
@@ -90,12 +90,12 @@ Since `NormReduction` only yields positive values, it is well suited for `Extrem
 `SumReduction` on the other hand can yield positive and negative values. If zero-values are meaningful, using a divergent color scheme with `CenteredColormap` can be the right choice:
 
 ```@example 1
-pipe = NormReduction() |> ExtremaColormap() |> FlipWH()
+pipe = NormReduction() |> ExtremaColormap() |> FlipImage()
 heatmap(x, pipe) |> only
 ```
 
 ```@example 1
-pipe = SumReduction() |> CenteredColormap() |> FlipWH()
+pipe = SumReduction() |> CenteredColormap() |> FlipImage()
 heatmap(x, pipe) |> only
 ```
 ### Outlier removal
@@ -107,7 +107,7 @@ For this purpose, we provide the adaptive [`PercentileClip`](@ref).
 By default, it clips the 0.1-th and 99.9-th percentiles of values.
 
 ```@example 1
-pipe = SumReduction() |> PercentileClip() |> CenteredColormap() |> FlipWH()
+pipe = SumReduction() |> PercentileClip() |> CenteredColormap() |> FlipImage()
 heatmap(x, pipe) |> only
 ```
 
@@ -116,12 +116,12 @@ We can use a custom color scheme from [ColorSchemes.jl](https://juliagraphics.gi
 
 ```@example 1
 using ColorSchemes
-pipe = NormReduction() |> ExtremaColormap(:jet) |> FlipWH()
+pipe = NormReduction() |> ExtremaColormap(:jet) |> FlipImage()
 heatmap(x, pipe) |> only
 ```
 
 ```@example 1
-pipe = NormReduction() |> ExtremaColormap(:viridis) |> FlipWH()
+pipe = NormReduction() |> ExtremaColormap(:viridis) |> FlipImage()
 heatmap(x, pipe) |> only
 ```
  
@@ -138,7 +138,7 @@ Singleton heatmaps can be overlaid on top of the original image.
 This can be used to recreate CAM-like heatmaps (usually in combination with [`ResizeToImage`](@ref)):
 
 ```@example 1
-pipe = NormReduction() |> PercentileClip()|> ExtremaColormap(:jet) |> FlipWH() |> AlphaOverlay()
+pipe = NormReduction() |> PercentileClip()|> ExtremaColormap(:jet) |> FlipImage() |> AlphaOverlay()
 heatmap(x, img, pipe) |> only
 ```
 
@@ -172,6 +172,6 @@ heatmap(batch)
 These heatmaps can be customized as usual:
 
 ```@example 1
-pipe = SumReduction() |> CenteredColormap() |> FlipWH()
+pipe = SumReduction() |> CenteredColormap() |> FlipImage()
 heatmap(batch, pipe)
 ```

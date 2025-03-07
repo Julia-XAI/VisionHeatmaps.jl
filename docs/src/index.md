@@ -30,7 +30,7 @@ AbsSumReduction
 
 ### Manipulating array dimensions
 ```@docs
-FlipWH
+FlipImage
 PermuteDims 
 DropDims
 ```
