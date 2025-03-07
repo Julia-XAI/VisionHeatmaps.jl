@@ -16,10 +16,10 @@ To install this package and its dependencies, open the Julia REPL and run
 ```@docs
 heatmap
 Pipeline
+AbstractTransform
 ```
 
 ### [Color-channel reduction](@id api-reduction)
-:
 ```@docs
 NormReduction
 SumReduction
@@ -35,11 +35,16 @@ PermuteDims
 DropDims
 ```
 
+### Outlier removal
+```@docs
+PercentileClip
+```
+
 ### Colormaps
 Turn numerical arrays to images by applying color schemes:
 ```@docs
-SequentialColormap
-DivergentColormap
+ExtremaColormap
+CenteredColormap
 ```
 
 ### Resizing
