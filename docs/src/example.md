@@ -34,8 +34,8 @@ using VisionHeatmaps
 heatmap(x)
 ```
 
-By default, to support batched explanations, a vector of images is returned.
-In our case, since this is a singleton vector, we will use the `only` function to unpack the image in our following examples:
+By default, to support batched explanations, a vector of heatmaps is returned.
+Since our following examples don't use batches, we will use the `only` function to unpack singleton heatmaps:
 
 ```@example 1
 using VisionHeatmaps
@@ -138,7 +138,7 @@ Singleton heatmaps can be overlaid on top of the original image.
 This can be used to recreate CAM-like heatmaps (usually in combination with [`ResizeToImage`](@ref)):
 
 ```@example 1
-pipe = NormReduction() |> PercentileClip()|> ExtremaColormap(:jet) |> FlipImage() |> AlphaOverlay()
+pipe = NormReduction() |> PercentileClip() |> ExtremaColormap(:jet) |> FlipImage() |> AlphaOverlay()
 heatmap(x, img, pipe) |> only
 ```
 
