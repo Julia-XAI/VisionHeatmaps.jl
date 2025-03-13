@@ -1,4 +1,9 @@
 # VisionHeatmaps.jl
+
+## Version `v2.0.0`
+* ![BREAKING][badge-breaking] Breaking rewrite adding customizable heatmapping pipelines. Check out the new documentation for more information. ([#15])
+* ![BREAKING][badge-breaking] Update default color schemes ([#13], [#14])
+
 ## Version `v1.5.0`
 * ![Feature][badge-feature] Allow alpha maps in `heatmap_overlay` ([#11][pr-11])
 
@@ -19,6 +24,9 @@
 ## Version `v1.0.0`
 * Initial release
 
+[#15]: https://github.com/Julia-XAI/VisionHeatmaps.jl/pull/15
+[#14]: https://github.com/Julia-XAI/VisionHeatmaps.jl/pull/14
+[#13]: https://github.com/Julia-XAI/VisionHeatmaps.jl/pull/13
 [pr-11]: https://github.com/Julia-XAI/VisionHeatmaps.jl/pull/11
 [pr-10]: https://github.com/Julia-XAI/VisionHeatmaps.jl/pull/10
 [pr-9]: https://github.com/Julia-XAI/VisionHeatmaps.jl/pull/9
