@@ -18,21 +18,48 @@ function call_analyzer(
     return Explanation(val, input, output, output_selection, :Dummy, :sensitivity)
 end
 
-shape = (2, 2, 3, 1)
-val = output = input = reshape(collect(Float32, 1:prod(shape)), shape)
 output_selection = [[CartesianIndex(1, 2)]] # irrelevant
 img = [RGB(1, 0, 0) RGB(0, 1, 0); RGB(0, 0, 1) RGB(1, 1, 1)]
 
 @testset "Heatmapping presets" begin
+    shape = (2, 4, 3, 1)
+    val = output = input = reshape(collect(Float32, 1:prod(shape)), shape)
+
     expl = Explanation(val, input, output, output_selection, :DummyAnalyzer, :attribution)
-    h = heatmap(expl)
-    @test_reference "references/attribution.txt" only(h)
+    h = only(heatmap(expl))
+    @test size(h) == (4, 2)
+    @test_reference "references/attribution.txt" h
+
     expl = Explanation(val, input, output, output_selection, :DummyAnalyzer, :sensitivity)
-    h = heatmap(expl)
-    @test_reference "references/sensitivity.txt" only(h)
+    h = only(heatmap(expl))
+    @test size(h) == (4, 2)
+    @test_reference "references/sensitivity.txt" h
+
     expl = Explanation(val, input, output, output_selection, :DummyAnalyzer, :cam)
-    h = heatmap(expl)
-    @test_reference "references/cam.txt" only(h)
+    h = only(heatmap(expl))
+    @test size(h) == (4, 2)
+    @test_reference "references/cam.txt" h
+
+    @testset "Singleton color channel" begin
+        shape = (2, 4, 1, 1)
+        val = output = input = reshape(collect(Float32, 1:prod(shape)), shape)
+
+        expl = Explanation(
+            val, input, output, output_selection, :DummyAnalyzer, :attribution
+        )
+        h = only(heatmap(expl))
+        @test size(h) == (4, 2)
+
+        expl = Explanation(
+            val, input, output, output_selection, :DummyAnalyzer, :sensitivity
+        )
+        h = only(heatmap(expl))
+        @test size(h) == (4, 2)
+
+        expl = Explanation(val, input, output, output_selection, :DummyAnalyzer, :cam)
+        h = only(heatmap(expl))
+        @test size(h) == (4, 2)
+    end
 end
 
 @testset "Overlay presets" begin
