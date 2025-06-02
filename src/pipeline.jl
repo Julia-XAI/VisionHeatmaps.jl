@@ -15,9 +15,9 @@ end
 Pipeline(ts...) = Pipeline(ts)
 Pipeline(t::AbstractTransform) = t
 
-#====================#
+##===================#
 # Applying pipelines #
-#====================#
+##===================#
 
 function apply(pipe::Pipeline, x, img)
     for t in pipe.transforms
@@ -26,9 +26,9 @@ function apply(pipe::Pipeline, x, img)
     return x
 end
 
-#=====================#
+##====================#
 # Composing pipelines #
-#=====================#
+##====================#
 
 """
     compose(transforms...)
@@ -47,9 +47,9 @@ function compose(p1::Pipeline, p2::Pipeline)
     compose(p1.transforms..., p2.transforms...)
 end
 
-#==========#
+##=========#
 # Printing #
-#==========#
+##=========#
 
 function Base.show(io::IO, pipe::Pipeline)
     println(io, "Pipeline(")
@@ -59,9 +59,9 @@ function Base.show(io::IO, pipe::Pipeline)
     print(io, ")")
 end
 
-#=============================#
+##============================#
 # Presets for XAIBase support #
-#=============================#
+##============================#
 
 const DEFAULT_PIPELINE_SENSITIVITY = NormReduction() |> ExtremaColormap() |> FlipImage()
 const DEFAULT_PIPELINE_ATTRIBUTION = NormReduction() |> CenteredColormap() |> FlipImage()

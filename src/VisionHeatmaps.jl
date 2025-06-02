@@ -9,6 +9,7 @@ using XAIBase: Explanation, AbstractXAIMethod, analyze
 using Configurations: @option
 
 const AbstractImage{T<:Union{Number,Colorant}} = AbstractArray{T,2}
+const AbstractImageBatch{T<:Union{Number,Colorant}} = AbstractArray{T,3}
 
 include("transforms/interface.jl")
 export AbstractTransform
