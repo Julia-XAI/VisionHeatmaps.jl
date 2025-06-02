@@ -1,5 +1,11 @@
 # VisionHeatmaps.jl
 
+## Version `v2.1.0`
+* ![Feature][badge-feature] Support overlays over batches of images
+
+## Version `v2.0.1`
+* ![Bugfix][badge-bugfix] Fix reductions on single color channel ([#16])
+
 ## Version `v2.0.0`
 * ![BREAKING][badge-breaking] Breaking rewrite adding customizable heatmapping pipelines. Check out the new documentation for more information. ([#15])
 * ![BREAKING][badge-breaking] Update default color schemes ([#13], [#14])

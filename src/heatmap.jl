@@ -13,17 +13,26 @@ Visualize 4D arrays as heatmaps, assuming the WHCN convention for input array di
 (width, height, color channels, batch dimension).
 """
 function heatmap(
-    x::AbstractArray{T,N}, img::Union{AbstractImage,Nothing}, pipe::Pipeline
+    vals::AbstractArray{T,N}, img::Union{AbstractImage,Nothing}, pipe::Pipeline
 ) where {T,N}
     N != 4 && throw(InputDimensionError)
-    return [apply(pipe, s, img) for s in eachslice(x; dims=4)]
+    return [apply(pipe, val, img) for val in eachslice(vals; dims=4)]
+end
+function heatmap(
+    vals::AbstractArray{T,N}, imgs::AbstractImageBatch, pipe::Pipeline
+) where {T,N}
+    N != 4 && throw(InputDimensionError)
+    return [
+        apply(pipe, val, img) for
+        (val, img) in Iterators.zip(eachslice(vals; dims=4), eachslice(imgs; dims=3))
+    ]
 end
 heatmap(x, pipeline::Pipeline) = heatmap(x, nothing, pipeline)
 heatmap(x) = heatmap(x, DEFAULT_PIPELINE)
 
-#=================#
+##================#
 # XAIBase support #
-#=================#
+##================#
 
 """
     heatmap(expl::Explanation)

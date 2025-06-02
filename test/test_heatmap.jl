@@ -17,6 +17,7 @@ batch = reshape(collect(Float32, 1:prod(shape)), shape)
 
 img = [RGB(1, 0, 0) RGB(0, 1, 0); RGB(0, 0, 1) RGB(1, 1, 1)]
 img2 = [RGB(x, y, 0) for x in 0:0.2:1, y in 0:0.2:1]
+img_batch = [RGB(x, y, z) for x in 0:0.2:1, y in 0:0.2:1, z in 0:1]
 
 rangscale2transform = Dict(:extrema => ExtremaColormap, :centered => CenteredColormap)
 reducer2transform = Dict(
@@ -105,6 +106,28 @@ end
             h = heatmap(batch, pipe)
             @test_reference "references/heatmap/viridis_$(reducer)_$(rangescale).txt" h[1]
             @test_reference "references/heatmap/viridis_$(reducer)_$(rangescale)_2.txt" h[2]
+        end
+    end
+end
+@testset "Batched overlay" begin
+    for colorscheme in colorschemes
+        for reducer in reducers
+            for rangescale in rangescales
+                Reduction = reducer2transform[reducer]
+                Colormap = rangscale2transform[rangescale]
+                pipe =
+                    Reduction() |>
+                    Colormap(colorscheme) |>
+                    FlipImage() |>
+                    ResizeToImage() |>
+                    AlphaOverlay()
+                ho = heatmap(batch, img_batch, pipe)
+                h1, h2 = ho[1], ho[2]
+
+                @test size(h1) == size(h2) == size(img2)
+                @test_reference "references/overlay_rescaled/$(colorscheme)_$(reducer)_$(rangescale).txt" h1
+                @test_reference "references/overlay_rescaled/$(colorscheme)_$(reducer)_$(rangescale)_2.txt" h1
+            end
         end
     end
 end
