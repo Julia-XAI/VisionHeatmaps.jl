@@ -125,8 +125,9 @@ end
                 h1, h2 = ho[1], ho[2]
 
                 @test size(h1) == size(h2) == size(img2)
-                @test_reference "references/overlay/$(colorscheme)_$(reducer)_$(rangescale).txt" h1
-                @test_reference "references/overlay/$(colorscheme)_$(reducer)_$(rangescale)_2.txt" h2
+                @test_reference "references/overlay_rescaled/$(colorscheme)_$(reducer)_$(rangescale).txt" h1
+                @test_reference "references/overlay_rescaled/$(colorscheme)_$(reducer)_$(rangescale)_2.txt" h1
+                
             end
         end
     end
