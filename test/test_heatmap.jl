@@ -21,9 +21,9 @@ img_batch = [RGB(x, y, z) for x in 0:0.2:1, y in 0:0.2:1, z in 0:1]
 
 rangscale2transform = Dict(:extrema => ExtremaColormap, :centered => CenteredColormap)
 reducer2transform = Dict(
-    :sum    => SumReduction,
+    :sum => SumReduction,
     :maxabs => MaxAbsReduction,
-    :norm   => NormReduction,
+    :norm => NormReduction,
     :sumabs => SumAbsReduction,
     :abssum => AbsSumReduction,
 )

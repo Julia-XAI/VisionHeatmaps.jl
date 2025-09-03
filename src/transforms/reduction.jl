@@ -5,16 +5,16 @@ Abstract supertype of all color channel reductions.
 """
 abstract type AbstractReduction <: AbstractTransform end
 
-reduce_dim3(f, x; kwargs...) = _dropdims(reduce(f, x; dims=3, kwargs...))
-_dropdims(x::AbstractArray{T,3}) where {T} = dropdims(x; dims=3)
-_dropdims(x::AbstractArray{T,4}) where {T} = dropdims(x; dims=(3, 4))
+reduce_dim3(f, x; kwargs...) = _dropdims(reduce(f, x; dims = 3, kwargs...))
+_dropdims(x::AbstractArray{T, 3}) where {T} = dropdims(x; dims = 3)
+_dropdims(x::AbstractArray{T, 4}) where {T} = dropdims(x; dims = (3, 4))
 
 # This default fallback (ab)uses callable structs to reduce code duplication.
 # It is more efficient to write custom `apply` methods, see `SumReduction`.
 function apply(reduction::AbstractReduction, x::AbstractArray)
     size(x, 3) == 1 && return _dropdims(x) # nothing to reduce
     init = zero(eltype(x))
-    return reduce_dim3(reduction, x; init=init)
+    return reduce_dim3(reduction, x; init = init)
 end
 
 """
