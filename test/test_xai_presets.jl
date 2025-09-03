@@ -10,7 +10,8 @@ struct DummyAnalyzer <: AbstractXAIMethod end
 function call_analyzer(
         input, ::DummyAnalyzer, output_selector::AbstractOutputSelector; kwargs...
     )
-    output = input
+    batchsize = last(size(input))
+    output = reshape(input, :, batchsize)
     output_selection = output_selector(output)
     batchsize = size(input)[end]
     v = reshape(output[output_selection], :, batchsize)
@@ -92,7 +93,6 @@ end
 @testset "Direct Analyzer call" begin
     analyzer = DummyAnalyzer()
     input = reshape([1 6 2 5 3 4], 2, 3, 1, 1)
-    val = reshape([3 36 6 30 9 24], 2, 3, 1, 1) # Explanation for max activation
     expl = analyzer(input)
 
     h1 = heatmap(expl)
