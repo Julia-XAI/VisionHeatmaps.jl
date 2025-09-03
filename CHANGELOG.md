@@ -1,7 +1,9 @@
 # VisionHeatmaps.jl
 
 ## Version `v2.1.0`
-* ![Feature][badge-feature] Support overlays over batches of images
+* ![Feature][badge-feature] Support overlays over batches of images ([#17])
+* ![Maintenance][badge-maintenance] Test type inferrence with JET.jl ([#19])
+* ![Maintenance][badge-maintenance] Format with Runic
 
 ## Version `v2.0.1`
 * ![Bugfix][badge-bugfix] Fix reductions on single color channel ([#16])
@@ -30,6 +32,8 @@
 ## Version `v1.0.0`
 * Initial release
 
+[#19]: https://github.com/Julia-XAI/VisionHeatmaps.jl/pull/19
+[#17]: https://github.com/Julia-XAI/VisionHeatmaps.jl/pull/17
 [#15]: https://github.com/Julia-XAI/VisionHeatmaps.jl/pull/15
 [#14]: https://github.com/Julia-XAI/VisionHeatmaps.jl/pull/14
 [#13]: https://github.com/Julia-XAI/VisionHeatmaps.jl/pull/13
