@@ -1,6 +1,5 @@
-
 # ColorMap(colorscheme, rangescale)
-# ChannelwiseColorMap(colorschemes, rangescales) 
+# ChannelwiseColorMap(colorschemes, rangescales)
 
 """
     ExtremaColormap(name::Symbol)
@@ -17,10 +16,10 @@ ExtremaColormap(name::Symbol) = ExtremaColormap(name, colorschemes[name])
 ExtremaColormap() = ExtremaColormap(:batlow)
 
 function Base.show(io::IO, ::MIME"text/plain", t::ExtremaColormap)
-    print(io, "ExtremaColormap(:$(t.name))")
+    return print(io, "ExtremaColormap(:$(t.name))")
 end
 function Base.show(io::IO, t::ExtremaColormap)
-    print(io, "ExtremaColormap(:$(t.name))")
+    return print(io, "ExtremaColormap(:$(t.name))")
 end
 
 apply(t::ExtremaColormap, x) = get(t.colorscheme, x, :extrema)
@@ -40,10 +39,10 @@ CenteredColormap(name::Symbol) = CenteredColormap(name, colorschemes[name])
 CenteredColormap() = CenteredColormap(:berlin)
 
 function Base.show(io::IO, ::MIME"text/plain", t::CenteredColormap)
-    print(io, "CenteredColormap(:$(t.name))")
+    return print(io, "CenteredColormap(:$(t.name))")
 end
 function Base.show(io::IO, t::CenteredColormap)
-    print(io, "CenteredColormap(:$(t.name))")
+    return print(io, "CenteredColormap(:$(t.name))")
 end
 
 apply(t::CenteredColormap, x) = get(t.colorscheme, x, :centered)

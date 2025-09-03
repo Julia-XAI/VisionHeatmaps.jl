@@ -8,7 +8,7 @@
 
 Heatmapping pipelines sequentially apply transforms.
 """
-struct Pipeline{T<:Tuple} <: AbstractTransform
+struct Pipeline{T <: Tuple} <: AbstractTransform
     transforms::T
 end
 
@@ -44,7 +44,7 @@ compose(t1::AbstractTransform, t2::AbstractTransform) = Pipeline(t1, t2)
 compose(p::Pipeline, t::AbstractTransform) = Pipeline(p.transforms..., t)
 compose(t::AbstractTransform, p::Pipeline) = compose(t, p.transforms...)
 function compose(p1::Pipeline, p2::Pipeline)
-    compose(p1.transforms..., p2.transforms...)
+    return compose(p1.transforms..., p2.transforms...)
 end
 
 ##=========#
@@ -56,7 +56,7 @@ function Base.show(io::IO, pipe::Pipeline)
     for t in pipe.transforms
         println(io, "  ", t, ",")
     end
-    print(io, ")")
+    return print(io, ")")
 end
 
 ##============================#
@@ -76,9 +76,9 @@ const DEFAULT_PIPELINE = DEFAULT_PIPELINE_SENSITIVITY
 const PIPELINE_PRESETS = Dict(
     :attribution => DEFAULT_PIPELINE_ATTRIBUTION,
     :sensitivity => DEFAULT_PIPELINE_SENSITIVITY,
-    :cam         => DEFAULT_PIPELINE_CAM,
+    :cam => DEFAULT_PIPELINE_CAM,
 )
 
 function Pipeline(expl::Explanation)
-    get(PIPELINE_PRESETS, expl.heatmap, DEFAULT_PIPELINE)
+    return get(PIPELINE_PRESETS, expl.heatmap, DEFAULT_PIPELINE)
 end

@@ -8,8 +8,8 @@ import XAIBase: call_analyzer
 
 struct DummyAnalyzer <: AbstractXAIMethod end
 function call_analyzer(
-    input, ::DummyAnalyzer, output_selector::AbstractOutputSelector; kwargs...
-)
+        input, ::DummyAnalyzer, output_selector::AbstractOutputSelector; kwargs...
+    )
     output = input
     output_selection = output_selector(output)
     batchsize = size(input)[end]
@@ -79,7 +79,7 @@ end
 end
 
 @testset "Batched input" begin
-    val = output = input = reshape(1.0:(2.0 ^ 4), 2, 2, 2, 2)
+    val = output = input = reshape(1.0:(2.0^4), 2, 2, 2, 2)
     output_selection = [CartesianIndex(1, 2), CartesianIndex(3, 4)] # irrelevant
     expl_batch = Explanation(
         val, input, output, output_selection, :DummyAnalyzer, :sensitivity

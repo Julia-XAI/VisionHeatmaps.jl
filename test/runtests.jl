@@ -13,7 +13,7 @@ using JuliaFormatter
     end
     @testset "JuliaFormatter.jl" begin
         @info "Running JuliaFormatter's code formatting tests."
-        @test format(VisionHeatmaps; verbose=false, overwrite=false)
+        @test format(VisionHeatmaps; verbose = false, overwrite = false)
     end
     @testset "Heatmap" begin
         @info "Testing heatmaps..."

@@ -7,10 +7,10 @@ const DEFAULT_OVERLAY_ALPHA = 0.6
 Overlays a heatmap on top of an image.
 The opacity `alpha` of the heatmap defaults to `$DEFAULT_OVERLAY_ALPHA`.
 """
-struct AlphaOverlay{T<:AbstractFloat} <: AbstractTransform
+struct AlphaOverlay{T <: AbstractFloat} <: AbstractTransform
     alpha::T
 
-    function AlphaOverlay(alpha::T) where {T<:AbstractFloat}
+    function AlphaOverlay(alpha::T) where {T <: AbstractFloat}
         if alpha < 0 || alpha > 1
             throw(DomainError("alpha must be in the range [0, 1]"))
         end

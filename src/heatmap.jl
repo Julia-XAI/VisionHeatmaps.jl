@@ -13,18 +13,18 @@ Visualize 4D arrays as heatmaps, assuming the WHCN convention for input array di
 (width, height, color channels, batch dimension).
 """
 function heatmap(
-    vals::AbstractArray{T,N}, img::Union{AbstractImage,Nothing}, pipe::Pipeline
-) where {T,N}
+        vals::AbstractArray{T, N}, img::Union{AbstractImage, Nothing}, pipe::Pipeline
+    ) where {T, N}
     N != 4 && throw(InputDimensionError)
-    return [apply(pipe, val, img) for val in eachslice(vals; dims=4)]
+    return [apply(pipe, val, img) for val in eachslice(vals; dims = 4)]
 end
 function heatmap(
-    vals::AbstractArray{T,N}, imgs::AbstractImageBatch, pipe::Pipeline
-) where {T,N}
+        vals::AbstractArray{T, N}, imgs::AbstractImageBatch, pipe::Pipeline
+    ) where {T, N}
     N != 4 && throw(InputDimensionError)
     return [
         apply(pipe, val, img) for
-        (val, img) in Iterators.zip(eachslice(vals; dims=4), eachslice(imgs; dims=3))
+            (val, img) in Iterators.zip(eachslice(vals; dims = 4), eachslice(imgs; dims = 3))
     ]
 end
 heatmap(x, pipeline::Pipeline) = heatmap(x, nothing, pipeline)
@@ -44,13 +44,13 @@ Visualize `Explanation` from XAIBase as a vision heatmap.
 Assumes WHCN convention (width, height, channels, batch dimension) for `explanation.val`.
 This will use the default heatmapping style for the given type of explanation.
 """
-function heatmap(expl::Explanation, img::Union{AbstractImage,Nothing}, pipe::Pipeline)
-    heatmap(expl.val, img, pipe)
+function heatmap(expl::Explanation, img::Union{AbstractImage, Nothing}, pipe::Pipeline)
+    return heatmap(expl.val, img, pipe)
 end
 heatmap(expl::Explanation, pipe::Pipeline) = heatmap(expl, nothing, pipe)
 heatmap(expl::Explanation) = heatmap(expl, Pipeline(expl))
-function heatmap(expl::Explanation, img::Union{AbstractImage,Nothing})
-    heatmap(expl, img, Pipeline(expl))
+function heatmap(expl::Explanation, img::Union{AbstractImage, Nothing})
+    return heatmap(expl, img, Pipeline(expl))
 end
 
 """
@@ -62,12 +62,12 @@ as a vision heatmap.
 This will use the default heatmapping style for the given type of explanation.
 """
 function heatmap(
-    input,
-    analyzer::AbstractXAIMethod,
-    img::AbstractImage,
-    analyze_args...;
-    analyze_kwargs...,
-)
+        input,
+        analyzer::AbstractXAIMethod,
+        img::AbstractImage,
+        analyze_args...;
+        analyze_kwargs...,
+    )
     expl = analyze(input, analyzer, analyze_args...; analyze_kwargs...)
     return heatmap(expl, img)
 end
