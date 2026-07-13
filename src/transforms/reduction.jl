@@ -19,7 +19,7 @@ end
 
 """
     NormReduction()
-    
+
 Computes 2-norm over color channels
 """
 struct NormReduction <: AbstractReduction end
@@ -27,7 +27,7 @@ struct NormReduction <: AbstractReduction end
 
 """
     MaxAbsReduction()
-    
+
 Computes `maximum(abs, x)` over color channels
 """
 struct MaxAbsReduction <: AbstractReduction end
@@ -35,7 +35,7 @@ struct MaxAbsReduction <: AbstractReduction end
 
 """
     SumAbsReduction()
-    
+
 Computes `sum(abs, x)` over color channels
 """
 struct SumAbsReduction <: AbstractReduction end
@@ -43,7 +43,7 @@ struct SumAbsReduction <: AbstractReduction end
 
 """
     AbsSumReduction()
-    
+
 Computes `abs(sum(x))` the color channels
 """
 struct AbsSumReduction <: AbstractReduction end

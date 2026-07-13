@@ -31,7 +31,7 @@ AbsSumReduction
 ### Manipulating array dimensions
 ```@docs
 FlipImage
-PermuteDims 
+PermuteDims
 DropDims
 ```
 

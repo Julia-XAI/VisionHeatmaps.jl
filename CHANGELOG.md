@@ -2,7 +2,7 @@
 
 ## Version `v2.1.0`
 * ![Feature][badge-feature] Support overlays over batches of images ([#17])
-* ![Maintenance][badge-maintenance] Test type inferrence with JET.jl ([#19])
+* ![Maintenance][badge-maintenance] Test type inference with JET.jl ([#19])
 * ![Maintenance][badge-maintenance] Format with Runic
 
 ## Version `v2.0.1`
@@ -24,7 +24,7 @@
 
 ## Version `v1.2.0`
 * ![Feature][badge-feature] Add heatmap overlays ([#5][pr-5])
-* ![Feature][badge-feature] Add color channel reduction presets `:sumabs` and `:abssum` ([#6][pr-6]) 
+* ![Feature][badge-feature] Add color channel reduction presets `:sumabs` and `:abssum` ([#6][pr-6])
 
 ## Version `v1.1.0`
 * ![Feature][badge-feature] Access color schemes through their symbols ([#3][pr-3])

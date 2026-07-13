@@ -10,7 +10,7 @@ asset_dir = HTTP.URI("https://raw.githubusercontent.com/Julia-XAI/VisionHeatmaps
 img = load(joinpath(asset_dir, "img1.png")) # load image file
 ```
 
-You might use an input space attribution method 
+You might use an input space attribution method
 (for example from [ExplainableAI.jl](https://github.com/Julia-XAI/ExplainableAI.jl))
 to determine which parts of the input contributed most to the "saxophone" class.
 
@@ -43,9 +43,9 @@ heatmap(x) |> only
 ```
 
 ## Custom heatmapping pipelines
- 
+
 VisionHeatmaps internally applies a sequence of image transformations in what we call a [`Pipeline`](@ref).
-The default pipeline corresponds to: 
+The default pipeline corresponds to:
 ```@example 1
 pipe = NormReduction() |> ExtremaColormap() |> FlipImage()
 ```
@@ -124,8 +124,8 @@ heatmap(x, pipe) |> only
 pipe = NormReduction() |> ExtremaColormap(:viridis) |> FlipImage()
 heatmap(x, pipe) |> only
 ```
- 
-We strongly suggest to only use sequential color schemes with `ExtremaColormap` 
+
+We strongly suggest to only use sequential color schemes with `ExtremaColormap`
 and divergent color schemes with `CenteredColormap`.
 
 !!! tip "ColorSchemes.jl catalogue"
@@ -147,7 +147,7 @@ heatmap(x, img, pipe) |> only
 Let's assume we computed an input space attribution `batch` for the following images.
 
 ```@example 1
-imgs = [load(joinpath(asset_dir, f)) for f in ("img1.png", "img2.png", "img3.png", "img4.png", "img5.png")] # load image files 
+imgs = [load(joinpath(asset_dir, f)) for f in ("img1.png", "img2.png", "img3.png", "img4.png", "img5.png")] # load image files
 ```
 
 Once again, we assume that `batch` is in WHCN format:

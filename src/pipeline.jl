@@ -33,7 +33,7 @@ end
 """
     compose(transforms...)
 
-Compose transforms to create a [`Pipeline`](@ref). 
+Compose transforms to create a [`Pipeline`](@ref).
 Uses `|>` on [`AbstractTransform`](@ref)s as an alias.
 """
 compose(t::AbstractTransform) = t

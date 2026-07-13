@@ -37,7 +37,7 @@ heatmap(x) = heatmap(x, DEFAULT_PIPELINE)
 """
     heatmap(expl::Explanation)
     heatmap(expl::Explanation, pipeline)
-    heatmap(expl::Explanation, image)   
+    heatmap(expl::Explanation, image)
     heatmap(expl::Explanation, image, pipeline)
 
 Visualize `Explanation` from XAIBase as a vision heatmap.
