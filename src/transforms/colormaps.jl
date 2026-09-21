@@ -1,50 +1,21 @@
-# ColorMap(colorscheme, rangescale)
-# ChannelwiseColorMap(colorschemes, rangescales)
-
 """
-    ExtremaColormap(name::Symbol)
-    ExtremaColormap(name::Symbol, colorscheme)
+    Colormap()
+    Colormap(name::Symbol)
+    Colormap(name::Symbol, colorscheme)
 
-Apply a sequential `colorscheme` from ColorSchemes.jl, turning an array of values into an image.
+Apply a `colorscheme` from ColorSchemes.jl, turning an array of values into an image.
 Defaults to `:batlow`.
+
+Values are expected to be normalized to the unit interval `[0, 1]`, e.g. by `ExtremaNormalization()` or `CenteredNormalization()` from XAIBase.jl.
+Values outside of this interval are clamped.
 """
-struct ExtremaColormap <: AbstractTransform
+struct Colormap <: AbstractTransform
     name::Symbol
     colorscheme::ColorScheme
 end
-ExtremaColormap(name::Symbol) = ExtremaColormap(name, colorschemes[name])
-ExtremaColormap() = ExtremaColormap(:batlow)
+Colormap(name::Symbol) = Colormap(name, colorschemes[name])
+Colormap() = Colormap(:batlow)
 
-function Base.show(io::IO, ::MIME"text/plain", t::ExtremaColormap)
-    return print(io, "ExtremaColormap(:$(t.name))")
-end
-function Base.show(io::IO, t::ExtremaColormap)
-    return print(io, "ExtremaColormap(:$(t.name))")
-end
+Base.show(io::IO, t::Colormap) = print(io, "Colormap(:$(t.name))")
 
-apply(t::ExtremaColormap, x) = get(t.colorscheme, x, :extrema)
-
-"""
-    CenteredColormap(name::Symbol)
-    CenteredColormap(name::Symbol, colorscheme)
-
-Apply a divergent `colorscheme` from ColorSchemes.jl, turning an array of values into an image.
-Defaults to `:berlin`.
-"""
-struct CenteredColormap <: AbstractTransform
-    name::Symbol
-    colorscheme::ColorScheme
-end
-CenteredColormap(name::Symbol) = CenteredColormap(name, colorschemes[name])
-CenteredColormap() = CenteredColormap(:berlin)
-
-function Base.show(io::IO, ::MIME"text/plain", t::CenteredColormap)
-    return print(io, "CenteredColormap(:$(t.name))")
-end
-function Base.show(io::IO, t::CenteredColormap)
-    return print(io, "CenteredColormap(:$(t.name))")
-end
-
-apply(t::CenteredColormap, x) = get(t.colorscheme, x, :centered)
-
-# TODO: Implement channel-wise colormaps?
+apply(t::Colormap, x::AbstractArray) = get(t.colorscheme, x, :clamp)

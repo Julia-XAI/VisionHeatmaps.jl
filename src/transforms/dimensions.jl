@@ -19,7 +19,7 @@ struct PermuteDims{T <: Tuple{Int}} <: AbstractTransform
     dims::T
 end
 
-apply(t::PermuteDims, x) = permutedims(x, t.dims)
+apply(t::PermuteDims, x::AbstractArray) = permutedims(x, t.dims)
 
 """
     DropDims(dims...)
@@ -30,4 +30,4 @@ struct DropDims{T <: Union{Int, Tuple{Int}}} <: AbstractTransform
     dims::T
 end
 
-apply(t::DropDims, x) = dropdims(x; dims = t.dims)
+apply(t::DropDims, x::AbstractArray) = dropdims(x; dims = t.dims)

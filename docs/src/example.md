@@ -47,7 +47,7 @@ heatmap(x) |> only
 VisionHeatmaps internally applies a sequence of image transformations in what we call a [`Pipeline`](@ref).
 The default pipeline corresponds to:
 ```@example 1
-pipe = NormReduction() |> ExtremaColormap() |> FlipImage()
+pipe = NormPooling() |> ExtremaNormalization() |> Colormap() |> FlipImage()
 ```
 
 We can apply this pipeline by passing it to `heatmap`:
@@ -58,46 +58,63 @@ heatmap(x, pipe) |> only
 
 In the following subsection, we will explain and modify this pipeline step by step.
 
-### [Color channel reduction](@id docs-heatmap-reduce)
+### [Attribution pooling](@id docs-heatmap-pooling)
 
-For arrays with multiple color channels, the channels need to be reduced to a single scalar value for each pixel, which is later mapped onto a color scheme.
+For arrays with multiple color channels,
+the channels need to be reduced to a single scalar value for each pixel,
+which is later mapped onto a color scheme.
 
-[Several transformats are available](@ref api-reduction) for this purpose. Let's compare the two most commonly used ones.
-[`NormReduction`](@ref) reduces color channels in the array by taking their norm,
-whereas [`SumReduction`](@ref) takes the sum:
+For this purpose, pipelines use the [attribution pooling functions](@ref api-pooling)
+from [XAIBase.jl](https://github.com/Julia-XAI/XAIBase.jl).
+Let's compare the two most commonly used ones.
+`NormPooling` reduces color channels in the array by taking their norm,
+whereas `SumPooling` takes the sum:
 
 ```@example 1
-pipe = NormReduction() |> ExtremaColormap() |> FlipImage()
+pipe = NormPooling() |> ExtremaNormalization() |> Colormap() |> FlipImage()
 heatmap(x, pipe) |> only
 ```
 
 ```@example 1
-pipe = SumReduction() |> ExtremaColormap() |> FlipImage()
+pipe = SumPooling() |> ExtremaNormalization() |> Colormap() |> FlipImage()
 heatmap(x, pipe) |> only
 ```
 
-### Colormaps
+### Normalization and colormaps
 
-To map the now [color-channel-reduced](@ref docs-heatmap-reduce) array onto a color scheme,
+To map the now [pooled](@ref docs-heatmap-pooling) array onto a color scheme,
 we first need to normalize all values to the range $[0, 1]$.
 
-For this purpose, two colormapping transforms are available:
-- [`ExtremaColormap`](@ref): normalizes colorscheme to the minimum and maximum value in the array.
-- [`CenteredColormap`](@ref): normalizes colorscheme to the maximum absolute value of the array.
+For this purpose, two [normalization functions](@ref api-normalization) are available:
+- `ExtremaNormalization`: maps the minimum and maximum value in the array onto $[0, 1]$.
+- `CenteredNormalization`: maps the negative and positive maximum absolute value of the array onto $[0, 1]$.
   Values of zero will be mapped to the center of the color scheme.
 
-Since `NormReduction` only yields positive values, it is well suited for `ExtremaColormap`.
-`SumReduction` on the other hand can yield positive and negative values. If zero-values are meaningful, using a divergent color scheme with `CenteredColormap` can be the right choice:
+A [`Colormap`](@ref) then applies a color scheme to the normalized values.
+
+Since `NormPooling` only yields positive values, it is well suited for `ExtremaNormalization`
+and a sequential color scheme like the default `:batlow`.
+`SumPooling` on the other hand can yield positive and negative values.
+If zero-values are meaningful,
+using `CenteredNormalization` with a divergent color scheme like `:berlin` can be the right choice:
 
 ```@example 1
-pipe = NormReduction() |> ExtremaColormap() |> FlipImage()
+pipe = NormPooling() |> ExtremaNormalization() |> Colormap() |> FlipImage()
 heatmap(x, pipe) |> only
 ```
 
 ```@example 1
-pipe = SumReduction() |> CenteredColormap() |> FlipImage()
+pipe = SumPooling() |> CenteredNormalization() |> Colormap(:berlin) |> FlipImage()
 heatmap(x, pipe) |> only
 ```
+
+!!! note "Heatmapping XAIBase attributions"
+    When heatmapping an `Attribution` from XAIBase.jl,
+    the default pipeline follows from its pooling function.
+    Unsigned pooling functions like `NormPooling` use `ExtremaNormalization` and `:batlow`,
+    whereas signed pooling functions like `SumPooling` use `CenteredNormalization` and `:berlin`.
+    Use [`VisionHeatmaps.default_pipeline`](@ref) to inspect or modify the default pipeline.
+
 ### Outlier removal
 
 While this isn't part of the default heatmapping pipelines,
@@ -107,7 +124,7 @@ For this purpose, we provide the adaptive [`PercentileClip`](@ref).
 By default, it clips the 0.1-th and 99.9-th percentiles of values.
 
 ```@example 1
-pipe = SumReduction() |> PercentileClip() |> CenteredColormap() |> FlipImage()
+pipe = SumPooling() |> PercentileClip() |> CenteredNormalization() |> Colormap(:berlin) |> FlipImage()
 heatmap(x, pipe) |> only
 ```
 
@@ -116,17 +133,17 @@ We can use a custom color scheme from [ColorSchemes.jl](https://juliagraphics.gi
 
 ```@example 1
 using ColorSchemes
-pipe = NormReduction() |> ExtremaColormap(:jet) |> FlipImage()
+pipe = NormPooling() |> ExtremaNormalization() |> Colormap(:jet) |> FlipImage()
 heatmap(x, pipe) |> only
 ```
 
 ```@example 1
-pipe = NormReduction() |> ExtremaColormap(:viridis) |> FlipImage()
+pipe = NormPooling() |> ExtremaNormalization() |> Colormap(:viridis) |> FlipImage()
 heatmap(x, pipe) |> only
 ```
 
-We strongly suggest to only use sequential color schemes with `ExtremaColormap`
-and divergent color schemes with `CenteredColormap`.
+We strongly suggest to only use sequential color schemes with `ExtremaNormalization`
+and divergent color schemes with `CenteredNormalization`.
 
 !!! tip "ColorSchemes.jl catalogue"
     Refer to the [ColorSchemes.jl catalogue](https://juliagraphics.github.io/ColorSchemes.jl/stable/basics/)
@@ -138,7 +155,7 @@ Singleton heatmaps can be overlaid on top of the original image.
 This can be used to recreate CAM-like heatmaps (usually in combination with [`ResizeToImage`](@ref)):
 
 ```@example 1
-pipe = NormReduction() |> PercentileClip() |> ExtremaColormap(:jet) |> FlipImage() |> AlphaOverlay()
+pipe = NormPooling() |> PercentileClip() |> ExtremaNormalization() |> Colormap(:jet) |> FlipImage() |> AlphaOverlay()
 heatmap(x, img, pipe) |> only
 ```
 
@@ -172,6 +189,16 @@ heatmap(batch)
 These heatmaps can be customized as usual:
 
 ```@example 1
-pipe = SumReduction() |> CenteredColormap() |> FlipImage()
+pipe = SumPooling() |> CenteredNormalization() |> Colormap(:berlin) |> FlipImage()
+heatmap(batch, pipe)
+```
+
+By default, each heatmap in a batch is normalized individually,
+so colors can't be compared across heatmaps.
+Wrapping the normalization in a [`BatchedNormalization`](@ref XAIBase.BatchedNormalization)
+normalizes the whole batch to a shared value range instead:
+
+```@example 1
+pipe = SumPooling() |> BatchedNormalization(CenteredNormalization()) |> Colormap(:berlin) |> FlipImage()
 heatmap(batch, pipe)
 ```

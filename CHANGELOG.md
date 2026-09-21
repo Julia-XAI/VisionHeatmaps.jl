@@ -1,5 +1,23 @@
 # VisionHeatmaps.jl
 
+## Version `v3.0.0`
+* ![BREAKING][badge-breaking] Support XAIBase v5, requiring XAIBase `v5.2`:
+  * heatmap `Attribution`s instead of `Explanation`s
+  * default pipelines are chosen by the attribution pooling function `attr.pooling`
+    and can be inspected using `VisionHeatmaps.default_pipeline(attr)`,
+    which replaces `Pipeline(expl)`
+  * remove the Grad-CAM preset. Grad-CAM attributions use `UnsignedNoPooling`
+* ![BREAKING][badge-breaking] Use attribution pooling and normalization functions from XAIBase in pipelines:
+  * pooling functions like `NormPooling()` and `SumPooling()` replace `AbstractReduction`
+    and the color-channel reductions `NormReduction`, `SumReduction`, `MaxAbsReduction`, `SumAbsReduction` and `AbsSumReduction`
+  * `ExtremaNormalization()` and `CenteredNormalization()` followed by `Colormap(name)`
+    replace `ExtremaColormap` and `CenteredColormap`
+  * `AbstractTransform` and `Pipeline` are now defined in XAIBase and re-exported
+* ![BREAKING][badge-breaking] Single-sample `apply` methods of custom transforms need to take `x::AbstractArray`
+* ![Feature][badge-feature] Pass batches through pipelines as a whole.
+  `BatchedNormalization(normalization)` normalizes all heatmaps in a batch to a shared value range
+* ![Bugfix][badge-bugfix] Throw a `DimensionMismatch` when batches of heatmaps and images have different sizes
+
 ## Version `v2.1.0`
 * ![Feature][badge-feature] Support overlays over batches of images ([#17])
 * ![Maintenance][badge-maintenance] Test type inference with JET.jl ([#19])

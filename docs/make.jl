@@ -1,4 +1,5 @@
 using VisionHeatmaps
+using XAIBase # API reference includes re-exported XAIBase docstrings
 using Documenter
 
 DocMeta.setdocmeta!(VisionHeatmaps, :DocTestSetup, :(using VisionHeatmaps); recursive = true)
