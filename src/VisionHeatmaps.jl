@@ -7,13 +7,14 @@ using Interpolations: Lanczos
 using ImageCore
 using XAIBase: Attribution, AbstractXAIMethod, analyze
 using XAIBase: AbstractTransform, Pipeline
+import XAIBase: compose
 using XAIBase: Batch, eachsample, mapsamples
-using XAIBase: AbstractPooling, UnsignedPooling, SignedPooling, pool
+using XAIBase: AbstractPooling, pool
 using XAIBase: SumPooling, MaxPooling, SignedNoPooling, UnsignedNoPooling
 using XAIBase: SumAbsPooling, AbsSumPooling, MaxAbsPooling, NormPooling, SquaredNormPooling
 using XAIBase: AbstractNormalization, ExtremaNormalization, CenteredNormalization
 using XAIBase: BatchedNormalization
-using XAIBase: normalize, default_normalization
+using XAIBase: normalize, default_normalization, issigned
 
 const AbstractImage{T <: Union{Number, Colorant}} = AbstractArray{T, 2}
 const AbstractImageBatch{T <: Union{Number, Colorant}} = AbstractArray{T, 3}

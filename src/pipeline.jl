@@ -21,19 +21,15 @@ apply(pipe::Pipeline, xs::Batch) = apply(pipe, xs, nothing)
     default_pipeline(pooling::AbstractPooling)
 
 Return the default heatmapping pipeline for an `Attribution` from XAIBase.jl,
-chosen based on its attribution pooling function `attr.pooling`:
+chosen based on its attribution pooling function `attr.pooling`.
+The pooling picks the normalization, which in turn picks the colormap:
 - `UnsignedPooling` (e.g. `NormPooling`) uses `ExtremaNormalization` and the sequential `:batlow`
 - `SignedPooling` (e.g. `SumPooling`) uses `CenteredNormalization` and the diverging `:berlin`
 """
 default_pipeline(attr::Attribution) = default_pipeline(attr.pooling)
 function default_pipeline(pooling::AbstractPooling)
-    return pooling |>
-        default_normalization(pooling) |>
-        default_colormap(pooling) |>
-        FlipImage()
+    normalization = default_normalization(pooling)
+    return pooling |> normalization |> default_colormap(normalization) |> FlipImage()
 end
-
-default_colormap(::UnsignedPooling) = Colormap(:batlow)
-default_colormap(::SignedPooling) = Colormap(:berlin)
 
 const DEFAULT_PIPELINE = default_pipeline(NormPooling())

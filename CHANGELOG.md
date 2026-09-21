@@ -16,6 +16,8 @@
 * ![BREAKING][badge-breaking] Single-sample `apply` methods of custom transforms need to take `x::AbstractArray`
 * ![Feature][badge-feature] Pass batches through pipelines as a whole.
   `BatchedNormalization(normalization)` normalizes all heatmaps in a batch to a shared value range
+* ![Feature][badge-feature] Warn when a pipeline pairs `ExtremaNormalization` with a diverging colormap
+  or `CenteredNormalization` with a sequential colormap
 * ![Bugfix][badge-bugfix] Throw a `DimensionMismatch` when batches of heatmaps and images have different sizes
 
 ## Version `v2.1.0`

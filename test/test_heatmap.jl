@@ -193,6 +193,31 @@ end
     @test_reference "references/overlay/inferno_sum_centered.txt" only(ho)
 end
 
+@testset "Colormap and normalization pairing" begin
+    default_colormap = VisionHeatmaps.default_colormap
+    @test default_colormap(ExtremaNormalization()) == Colormap(:batlow)
+    @test default_colormap(CenteredNormalization()) == Colormap(:berlin)
+    @test default_colormap(BatchedNormalization(CenteredNormalization())) ==
+        Colormap(:berlin)
+
+    # Matching and unknown kinds of colormaps don't warn
+    @test_logs ExtremaNormalization() |> Colormap(:batlow)
+    @test_logs CenteredNormalization() |> Colormap(:berlin)
+    @test_logs ExtremaNormalization() |> Colormap(:jet)
+    @test_logs NormPooling() |> Colormap(:berlin)
+
+    # Mismatched kinds of colormaps warn
+    @test_logs (:warn, r"diverging colormap") CenteredNormalization() |> Colormap()
+    @test_logs (:warn, r"sequential colormap") ExtremaNormalization() |> Colormap(:berlin)
+    @test_logs (:warn, r"sequential colormap") ExtremaNormalization() |>
+        (Colormap(:berlin) |> FlipImage())
+    @test_logs (:warn, r"diverging colormap") SumPooling() |>
+        BatchedNormalization(CenteredNormalization()) |>
+        PercentileClip() |>
+        Colormap(:viridis) |>
+        FlipImage()
+end
+
 @testset "Error handling" begin
     @test_throws DomainError AlphaOverlay(2.0)
     @test_throws DomainError AlphaOverlay(-1.0)
