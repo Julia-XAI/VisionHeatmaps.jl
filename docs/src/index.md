@@ -38,7 +38,17 @@ and re-exported by VisionHeatmaps:
 ```@docs
 Pipeline
 AbstractTransform
-VisionHeatmaps.apply
+```
+
+Transforms and pipelines are applied using:
+```@meta
+CurrentModule = VisionHeatmaps
+```
+```@docs
+apply
+```
+```@meta
+CurrentModule = XAIBase
 ```
 
 ### [Attribution pooling](@id api-pooling)
