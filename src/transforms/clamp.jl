@@ -21,7 +21,7 @@ struct PercentileClip{T <: AbstractFloat} <: AbstractTransform
 end
 PercentileClip() = PercentileClip(0.001, 0.999)
 
-function apply(t::PercentileClip, x)
+function apply(t::PercentileClip, x::AbstractArray)
     lb = quantile(x[:], t.lower)
     ub = quantile(x[:], t.upper)
     return clamp.(x, lb, ub)

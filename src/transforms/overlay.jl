@@ -19,7 +19,7 @@ struct AlphaOverlay{T <: AbstractFloat} <: AbstractTransform
 end
 AlphaOverlay() = AlphaOverlay(DEFAULT_OVERLAY_ALPHA)
 
-function apply(t::AlphaOverlay, x, img)
+function apply(t::AlphaOverlay, x::AbstractArray, img::AbstractImage)
     hsize = size(x)
     isize = size(img)
     if hsize != isize

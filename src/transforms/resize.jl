@@ -12,7 +12,7 @@ struct ResizeToImage{M} <: AbstractTransform
 end
 ResizeToImage() = ResizeToImage(DEFAULT_RESIZE_METHOD)
 
-function apply(t::ResizeToImage, x, img)
+function apply(t::ResizeToImage, x::AbstractArray, img::AbstractImage)
     hsize = size(x)
     isize = size(img)
     hsize == isize && return x

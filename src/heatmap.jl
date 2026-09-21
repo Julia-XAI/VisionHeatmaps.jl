@@ -12,21 +12,25 @@ const InputDimensionError = ArgumentError(
 Visualize 4D arrays as heatmaps, assuming the WHCN convention for input array dimensions
 (width, height, color channels, batch dimension).
 """
+# Values arrive in WHCN order, images in display (HW) orientation.
+# `heatmap` flips width and height by default so pipelines produce display-oriented
+# images without having to include `FlipImage`. Pooling, normalization and colormaps
+# commute with this flip, so the result is unchanged from flipping just before display.
 function heatmap(
         vals::AbstractArray{T, N}, img::Union{AbstractImage, Nothing}, pipe::Pipeline
     ) where {T, N}
     N != 4 && throw(InputDimensionError)
-    return [apply(pipe, val, img) for val in eachslice(vals; dims = 4)]
+    return unwrap(apply(pipe, Batch(apply(FlipImage(), vals)), img))
 end
 function heatmap(
         vals::AbstractArray{T, N}, imgs::AbstractImageBatch, pipe::Pipeline
     ) where {T, N}
     N != 4 && throw(InputDimensionError)
-    return [
-        apply(pipe, val, img) for
-            (val, img) in Iterators.zip(eachslice(vals; dims = 4), eachslice(imgs; dims = 3))
-    ]
+    return unwrap(apply(pipe, Batch(apply(FlipImage(), vals)), Batch(imgs)))
 end
+
+# Return heatmaps as a vector of images
+unwrap(hs::Batch) = [copy(h) for h in eachsample(hs)]
 heatmap(x, pipeline::Pipeline) = heatmap(x, nothing, pipeline)
 heatmap(x) = heatmap(x, DEFAULT_PIPELINE)
 
@@ -35,31 +39,32 @@ heatmap(x) = heatmap(x, DEFAULT_PIPELINE)
 ##================#
 
 """
-    heatmap(expl::Explanation)
-    heatmap(expl::Explanation, pipeline)
-    heatmap(expl::Explanation, image)
-    heatmap(expl::Explanation, image, pipeline)
+    heatmap(attr::Attribution)
+    heatmap(attr::Attribution, pipeline)
+    heatmap(attr::Attribution, image)
+    heatmap(attr::Attribution, image, pipeline)
 
-Visualize `Explanation` from XAIBase as a vision heatmap.
-Assumes WHCN convention (width, height, channels, batch dimension) for `explanation.val`.
-This will use the default heatmapping style for the given type of explanation.
+Visualize `Attribution` from XAIBase as a vision heatmap.
+Assumes WHCN convention (width, height, channels, batch dimension) for `attr.val`.
+Unless a `pipeline` is passed, this will use the default heatmapping pipeline
+for the attribution pooling function `attr.pooling`, see [`default_pipeline`](@ref).
 """
-function heatmap(expl::Explanation, img::Union{AbstractImage, Nothing}, pipe::Pipeline)
-    return heatmap(expl.val, img, pipe)
+function heatmap(attr::Attribution, img::Union{AbstractImage, Nothing}, pipe::Pipeline)
+    return heatmap(attr.val, img, pipe)
 end
-heatmap(expl::Explanation, pipe::Pipeline) = heatmap(expl, nothing, pipe)
-heatmap(expl::Explanation) = heatmap(expl, Pipeline(expl))
-function heatmap(expl::Explanation, img::Union{AbstractImage, Nothing})
-    return heatmap(expl, img, Pipeline(expl))
+heatmap(attr::Attribution, pipe::Pipeline) = heatmap(attr, nothing, pipe)
+heatmap(attr::Attribution) = heatmap(attr, default_pipeline(attr))
+function heatmap(attr::Attribution, img::Union{AbstractImage, Nothing})
+    return heatmap(attr, img, default_pipeline(attr))
 end
 
 """
     heatmap(input::AbstractArray, analyzer::AbstractXAIMethod)
     heatmap(input::AbstractArray, analyzer::AbstractXAIMethod, image)
 
-Compute an `Explanation` for a given `input` using the XAI method `analyzer` and visualize it
+Compute an `Attribution` for a given `input` using the XAI method `analyzer` and visualize it
 as a vision heatmap.
-This will use the default heatmapping style for the given type of explanation.
+This will use the default heatmapping pipeline for the attribution pooling function `attr.pooling`.
 """
 function heatmap(
         input,
@@ -68,10 +73,10 @@ function heatmap(
         analyze_args...;
         analyze_kwargs...,
     )
-    expl = analyze(input, analyzer, analyze_args...; analyze_kwargs...)
-    return heatmap(expl, img)
+    attr = analyze(input, analyzer, analyze_args...; analyze_kwargs...)
+    return heatmap(attr, img)
 end
 function heatmap(input, analyzer::AbstractXAIMethod, analyze_args...; analyze_kwargs...)
-    expl = analyze(input, analyzer, analyze_args...; analyze_kwargs...)
-    return heatmap(expl, nothing)
+    attr = analyze(input, analyzer, analyze_args...; analyze_kwargs...)
+    return heatmap(attr, nothing)
 end
