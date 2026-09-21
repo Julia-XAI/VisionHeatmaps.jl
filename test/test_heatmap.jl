@@ -151,7 +151,7 @@ end
         pipe = NormPooling() |> BatchedNormalization(Normalization()) |> Colormap() |> FlipImage()
         h1, h2 = heatmap(x, pipe)
         @test h1 != h2
-        pooled = dropdims(pool(NormPooling(), x, 3); dims = 3)
+        pooled = pool(NormPooling(), x, 3)
         bounds = normalization_bounds(Normalization(), pooled)
         for (h, p) in zip((h1, h2), eachslice(pooled; dims = 3))
             @test h == permutedims(get(ColorSchemes.batlow, Normalization()(p, bounds)))

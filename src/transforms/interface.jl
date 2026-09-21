@@ -19,16 +19,8 @@ apply(t::AbstractTransform, xs::Batch) = mapsamples(x -> apply(t, x), xs)
 # Pooling functions reduce the color-channel dimension, which is then dropped.
 # Following the WHCN convention, color channels are the third dimension
 # of both single samples and batches.
-apply(p::AbstractPooling, x::AbstractArray{T, 3}) where {T} = pool_channels(p, x)
-apply(p::AbstractPooling, xs::Batch) = Batch(pool_channels(p, xs.val))
-
-function pool_channels(p::AbstractPooling, x::AbstractArray)
-    y = pool(p, x, 3)
-    size(y, 3) != 1 && throw(
-        ArgumentError("$p can't reduce $(size(y, 3)) color channels to a single channel."),
-    )
-    return dropdims(y; dims = 3)
-end
+apply(p::AbstractPooling, x::AbstractArray{T, 3}) where {T} = pool(p, x, 3)
+apply(p::AbstractPooling, xs::Batch) = pool(p, xs, 3)
 
 # Normalization functions from XAIBase handle batches,
 # e.g. to normalize the whole batch at once using `BatchedNormalization`.
