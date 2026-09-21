@@ -5,7 +5,7 @@ using Documenter
 DocMeta.setdocmeta!(VisionHeatmaps, :DocTestSetup, :(using VisionHeatmaps); recursive = true)
 
 makedocs(;
-    modules = [VisionHeatmaps],
+    modules = [VisionHeatmaps, XAIBase],
     authors = "Adrian Hill <gh@adrianhill.de>",
     repo = "https://github.com/Julia-XAI/VisionHeatmaps.jl/blob/{commit}{path}#{line}",
     sitename = "VisionHeatmaps.jl",

@@ -74,6 +74,15 @@ normalization_bounds
 default_normalization
 ```
 
+### Batches
+Heatmapping pipelines are applied to batches of type `XAIBase.Batch`.
+By default, transforms are applied to each sample individually:
+```@docs
+XAIBase.Batch
+XAIBase.eachsample
+XAIBase.mapsamples
+```
+
 ```@meta
 CurrentModule = VisionHeatmaps
 ```
