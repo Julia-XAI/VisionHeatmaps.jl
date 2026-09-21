@@ -40,7 +40,7 @@ rangescales = [:extrema, :centered]
             for rangescale in rangescales
                 Pooling = reducer2pooling[reducer]
                 Normalization = rangescale2normalization[rangescale]
-                pipe = Pooling() |> Normalization() |> Colormap(colorscheme) |> FlipImage()
+                pipe = Pooling() |> Normalization() |> Colormap(colorscheme)
                 h = heatmap(A, pipe)
                 @test_reference "references/heatmap/$(colorscheme)_$(reducer)_$(rangescale).txt" only(
                     h
@@ -55,7 +55,6 @@ rangescales = [:extrema, :centered]
                     Pooling() |>
                     Normalization() |>
                     Colormap(colorscheme) |>
-                    FlipImage() |>
                     ResizeToImage() |>
                     AlphaOverlay()
                 ho = heatmap(A, img, pipe)
@@ -82,7 +81,6 @@ end
                     Pooling() |>
                     Normalization() |>
                     Colormap(colorscheme) |>
-                    FlipImage() |>
                     ResizeToImage() |>
                     AlphaOverlay()
                 ho = heatmap(A, img2, pipe)
@@ -104,7 +102,6 @@ end
                 Pooling() |>
                 Normalization() |>
                 Colormap(:viridis) |>
-                FlipImage() |>
                 ResizeToImage() |>
                 AlphaOverlay()
 
@@ -124,7 +121,6 @@ end
                     Pooling() |>
                     Normalization() |>
                     Colormap(colorscheme) |>
-                    FlipImage() |>
                     ResizeToImage() |>
                     AlphaOverlay()
                 ho = heatmap(batch, img_batch, pipe)
@@ -143,12 +139,12 @@ end
     x = cat(A, 3 .* A; dims = 4)
     for Normalization in (ExtremaNormalization, CenteredNormalization)
         # By default, samples are normalized individually
-        pipe = NormPooling() |> Normalization() |> Colormap() |> FlipImage()
+        pipe = NormPooling() |> Normalization() |> Colormap()
         h1, h2 = heatmap(x, pipe)
         @test channelview(h1) ≈ channelview(h2) rtol = 1.0e-5 # Float32 rounding
 
         # Batched normalization uses a shared value range
-        pipe = NormPooling() |> BatchedNormalization(Normalization()) |> Colormap() |> FlipImage()
+        pipe = NormPooling() |> BatchedNormalization(Normalization()) |> Colormap()
         h1, h2 = heatmap(x, pipe)
         @test h1 != h2
         pooled = pool(NormPooling(), x, 3)
@@ -169,7 +165,7 @@ end
 
         # On single samples, batched normalization has no effect
         @test heatmap(A, pipe) ==
-            heatmap(A, NormPooling() |> Normalization() |> Colormap() |> FlipImage())
+            heatmap(A, NormPooling() |> Normalization() |> Colormap())
     end
 
     # Batches of heatmaps and images need to have the same size
@@ -178,7 +174,7 @@ end
 end
 
 @testset "ColorSchemes" begin
-    pipe = NormPooling() |> ExtremaNormalization() |> Colormap(:inferno) |> FlipImage()
+    pipe = NormPooling() |> ExtremaNormalization() |> Colormap(:inferno)
     h = heatmap(A, pipe)
     @test_reference "references/heatmap/inferno_norm_extrema.txt" only(h)
 
@@ -186,7 +182,6 @@ end
         SumPooling() |>
         CenteredNormalization() |>
         Colormap(:inferno) |>
-        FlipImage() |>
         ResizeToImage() |>
         AlphaOverlay()
     ho = heatmap(A, img, pipe)
@@ -228,6 +223,6 @@ end
     @test_throws ArgumentError heatmap(B)
 
     # Identity poolings can't reduce multiple color channels
-    pipe = UnsignedNoPooling() |> ExtremaNormalization() |> Colormap() |> FlipImage()
+    pipe = UnsignedNoPooling() |> ExtremaNormalization() |> Colormap()
     @test_throws ArgumentError heatmap(A, pipe)
 end

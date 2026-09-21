@@ -47,7 +47,7 @@ heatmap(x) |> only
 VisionHeatmaps internally applies a sequence of image transformations in what we call a [`Pipeline`](@ref).
 The default pipeline corresponds to:
 ```@example 1
-pipe = NormPooling() |> ExtremaNormalization() |> Colormap() |> FlipImage()
+pipe = NormPooling() |> ExtremaNormalization() |> Colormap()
 ```
 
 We can apply this pipeline by passing it to `heatmap`:
@@ -55,6 +55,12 @@ We can apply this pipeline by passing it to `heatmap`:
 ```@example 1
 heatmap(x, pipe) |> only
 ```
+
+!!! note "Image orientation"
+    `heatmap` assumes WHCN input and flips the width and height dimensions by default,
+    so that pipelines return display-oriented images.
+    Because of this, pipelines don't need to include [`FlipImage`](@ref).
+    It remains available for pipelines that operate on already-oriented arrays.
 
 In the following subsection, we will explain and modify this pipeline step by step.
 
@@ -71,12 +77,12 @@ Let's compare the two most commonly used ones.
 whereas `SumPooling` takes the sum:
 
 ```@example 1
-pipe = NormPooling() |> ExtremaNormalization() |> Colormap() |> FlipImage()
+pipe = NormPooling() |> ExtremaNormalization() |> Colormap()
 heatmap(x, pipe) |> only
 ```
 
 ```@example 1
-pipe = SumPooling() |> ExtremaNormalization() |> Colormap() |> FlipImage()
+pipe = SumPooling() |> ExtremaNormalization() |> Colormap()
 heatmap(x, pipe) |> only
 ```
 
@@ -99,12 +105,12 @@ If zero-values are meaningful,
 using `CenteredNormalization` with a divergent colormap like `:berlin` can be the right choice:
 
 ```@example 1
-pipe = NormPooling() |> ExtremaNormalization() |> Colormap() |> FlipImage()
+pipe = NormPooling() |> ExtremaNormalization() |> Colormap()
 heatmap(x, pipe) |> only
 ```
 
 ```@example 1
-pipe = SumPooling() |> CenteredNormalization() |> Colormap(:berlin) |> FlipImage()
+pipe = SumPooling() |> CenteredNormalization() |> Colormap(:berlin)
 heatmap(x, pipe) |> only
 ```
 
@@ -124,7 +130,7 @@ For this purpose, we provide the adaptive [`PercentileClip`](@ref).
 By default, it clips the 0.1-th and 99.9-th percentiles of values.
 
 ```@example 1
-pipe = SumPooling() |> PercentileClip() |> CenteredNormalization() |> Colormap(:berlin) |> FlipImage()
+pipe = SumPooling() |> PercentileClip() |> CenteredNormalization() |> Colormap(:berlin)
 heatmap(x, pipe) |> only
 ```
 
@@ -133,12 +139,12 @@ We can use any colormap from [ColorSchemes.jl](https://juliagraphics.github.io/C
 
 ```@example 1
 using ColorSchemes
-pipe = NormPooling() |> ExtremaNormalization() |> Colormap(:jet) |> FlipImage()
+pipe = NormPooling() |> ExtremaNormalization() |> Colormap(:jet)
 heatmap(x, pipe) |> only
 ```
 
 ```@example 1
-pipe = NormPooling() |> ExtremaNormalization() |> Colormap(:viridis) |> FlipImage()
+pipe = NormPooling() |> ExtremaNormalization() |> Colormap(:viridis)
 heatmap(x, pipe) |> only
 ```
 
@@ -155,7 +161,7 @@ Singleton heatmaps can be overlaid on top of the original image.
 This can be used to recreate CAM-like heatmaps (usually in combination with [`ResizeToImage`](@ref)):
 
 ```@example 1
-pipe = NormPooling() |> PercentileClip() |> ExtremaNormalization() |> Colormap(:jet) |> FlipImage() |> AlphaOverlay()
+pipe = NormPooling() |> PercentileClip() |> ExtremaNormalization() |> Colormap(:jet) |> AlphaOverlay()
 heatmap(x, img, pipe) |> only
 ```
 
@@ -189,7 +195,7 @@ heatmap(batch)
 These heatmaps can be customized as usual:
 
 ```@example 1
-pipe = SumPooling() |> CenteredNormalization() |> Colormap(:berlin) |> FlipImage()
+pipe = SumPooling() |> CenteredNormalization() |> Colormap(:berlin)
 heatmap(batch, pipe)
 ```
 
@@ -199,6 +205,6 @@ Wrapping the normalization in a [`BatchedNormalization`](@ref XAIBase.BatchedNor
 normalizes the whole batch to a shared value range instead:
 
 ```@example 1
-pipe = SumPooling() |> BatchedNormalization(CenteredNormalization()) |> Colormap(:berlin) |> FlipImage()
+pipe = SumPooling() |> BatchedNormalization(CenteredNormalization()) |> Colormap(:berlin)
 heatmap(batch, pipe)
 ```

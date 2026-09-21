@@ -3,6 +3,11 @@
 
 Permutes the width and height dimensions of an array.
 Assumes width and height are the leading directions in the array.
+
+`heatmap` already applies this flip by default,
+turning WHCN values into display-oriented images,
+so it does not need to be part of a pipeline.
+It remains available for pipelines that operate on pre-oriented arrays.
 """
 struct FlipImage <: AbstractTransform end
 

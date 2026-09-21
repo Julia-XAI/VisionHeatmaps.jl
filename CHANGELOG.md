@@ -1,6 +1,10 @@
 # VisionHeatmaps.jl
 
 ## Version `v3.0.0`
+* ![BREAKING][badge-breaking] `heatmap` now flips the width and height dimensions by default,
+  so pipelines no longer need to include `FlipImage`.
+  Remove `FlipImage` from custom pipelines to avoid flipping twice.
+  `FlipImage` remains available for pipelines that operate on already-oriented arrays
 * ![BREAKING][badge-breaking] Support XAIBase v5, requiring XAIBase `v5.2`:
   * heatmap `Attribution`s instead of `Explanation`s
   * default pipelines are chosen by the attribution pooling function `attr.pooling`
@@ -18,7 +22,6 @@
   `BatchedNormalization(normalization)` normalizes all heatmaps in a batch to a shared value range
 * ![Feature][badge-feature] Warn when a pipeline pairs `ExtremaNormalization` with a diverging colormap
   or `CenteredNormalization` with a sequential colormap
-* ![Bugfix][badge-bugfix] Throw a `DimensionMismatch` when batches of heatmaps and images have different sizes
 
 ## Version `v2.1.0`
 * ![Feature][badge-feature] Support overlays over batches of images ([#17])

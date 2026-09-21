@@ -12,17 +12,21 @@ const InputDimensionError = ArgumentError(
 Visualize 4D arrays as heatmaps, assuming the WHCN convention for input array dimensions
 (width, height, color channels, batch dimension).
 """
+# Values arrive in WHCN order, images in display (HW) orientation.
+# `heatmap` flips width and height by default so pipelines produce display-oriented
+# images without having to include `FlipImage`. Pooling, normalization and colormaps
+# commute with this flip, so the result is unchanged from flipping just before display.
 function heatmap(
         vals::AbstractArray{T, N}, img::Union{AbstractImage, Nothing}, pipe::Pipeline
     ) where {T, N}
     N != 4 && throw(InputDimensionError)
-    return unwrap(apply(pipe, Batch(vals), img))
+    return unwrap(apply(pipe, Batch(apply(FlipImage(), vals)), img))
 end
 function heatmap(
         vals::AbstractArray{T, N}, imgs::AbstractImageBatch, pipe::Pipeline
     ) where {T, N}
     N != 4 && throw(InputDimensionError)
-    return unwrap(apply(pipe, Batch(vals), Batch(imgs)))
+    return unwrap(apply(pipe, Batch(apply(FlipImage(), vals)), Batch(imgs)))
 end
 
 # Return heatmaps as a vector of images

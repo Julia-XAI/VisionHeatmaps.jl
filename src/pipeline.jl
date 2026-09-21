@@ -29,7 +29,7 @@ The pooling picks the normalization, which in turn picks the colormap:
 default_pipeline(attr::Attribution) = default_pipeline(attr.pooling)
 function default_pipeline(pooling::AbstractPooling)
     normalization = default_normalization(pooling)
-    return pooling |> normalization |> default_colormap(normalization) |> FlipImage()
+    return pooling |> normalization |> default_colormap(normalization)
 end
 
 const DEFAULT_PIPELINE = default_pipeline(NormPooling())

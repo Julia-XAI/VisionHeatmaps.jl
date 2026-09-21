@@ -29,14 +29,14 @@ img = [RGB(1, 0, 0) RGB(0, 1, 0); RGB(0, 0, 1) RGB(1, 1, 1)]
 
     attr = Attribution(val, input, output, output_selection, SumPooling())
     @test default_pipeline(attr) ==
-        SumPooling() |> CenteredNormalization() |> Colormap(:berlin) |> FlipImage()
+        SumPooling() |> CenteredNormalization() |> Colormap(:berlin)
     h = only(heatmap(attr))
     @test size(h) == (4, 2)
     @test_reference "references/attribution.txt" h
 
     attr = Attribution(val, input, output, output_selection, NormPooling())
     @test default_pipeline(attr) ==
-        NormPooling() |> ExtremaNormalization() |> Colormap(:batlow) |> FlipImage()
+        NormPooling() |> ExtremaNormalization() |> Colormap(:batlow)
     h = only(heatmap(attr))
     @test size(h) == (4, 2)
     @test_reference "references/sensitivity.txt" h
@@ -46,7 +46,7 @@ img = [RGB(1, 0, 0) RGB(0, 1, 0); RGB(0, 0, 1) RGB(1, 1, 1)]
     val = output = input = reshape(collect(Float32, 1:prod(shape)), shape)
     attr = Attribution(val, input, output, output_selection, UnsignedNoPooling())
     @test default_pipeline(attr) ==
-        UnsignedNoPooling() |> ExtremaNormalization() |> Colormap(:batlow) |> FlipImage()
+        UnsignedNoPooling() |> ExtremaNormalization() |> Colormap(:batlow)
     h = only(heatmap(attr))
     @test size(h) == (4, 2)
     @test_reference "references/cam.txt" h
