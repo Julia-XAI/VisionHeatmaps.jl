@@ -100,7 +100,7 @@ PercentileClip
 ```
 
 ### Colormaps
-Turn numerical arrays to images by applying color schemes:
+Turn numerical arrays to images by applying colormaps:
 ```@docs
 Colormap
 ```

@@ -62,7 +62,7 @@ In the following subsection, we will explain and modify this pipeline step by st
 
 For arrays with multiple color channels,
 the channels need to be reduced to a single scalar value for each pixel,
-which is later mapped onto a color scheme.
+which is later mapped onto a colormap.
 
 For this purpose, pipelines use the [attribution pooling functions](@ref api-pooling)
 from [XAIBase.jl](https://github.com/Julia-XAI/XAIBase.jl).
@@ -82,21 +82,21 @@ heatmap(x, pipe) |> only
 
 ### Normalization and colormaps
 
-To map the now [pooled](@ref docs-heatmap-pooling) array onto a color scheme,
+To map the now [pooled](@ref docs-heatmap-pooling) array onto a colormap,
 we first need to normalize all values to the range $[0, 1]$.
 
 For this purpose, two [normalization functions](@ref api-normalization) are available:
 - `ExtremaNormalization`: maps the minimum and maximum value in the array onto $[0, 1]$.
 - `CenteredNormalization`: maps the negative and positive maximum absolute value of the array onto $[0, 1]$.
-  Values of zero will be mapped to the center of the color scheme.
+  Values of zero will be mapped to the center of the colormap.
 
-A [`Colormap`](@ref) then applies a color scheme to the normalized values.
+A [`Colormap`](@ref) is then applied to the normalized values.
 
 Since `NormPooling` only yields positive values, it is well suited for `ExtremaNormalization`
-and a sequential color scheme like the default `:batlow`.
+and a sequential colormap like the default `:batlow`.
 `SumPooling` on the other hand can yield positive and negative values.
 If zero-values are meaningful,
-using `CenteredNormalization` with a divergent color scheme like `:berlin` can be the right choice:
+using `CenteredNormalization` with a divergent colormap like `:berlin` can be the right choice:
 
 ```@example 1
 pipe = NormPooling() |> ExtremaNormalization() |> Colormap() |> FlipImage()
@@ -128,8 +128,8 @@ pipe = SumPooling() |> PercentileClip() |> CenteredNormalization() |> Colormap(:
 heatmap(x, pipe) |> only
 ```
 
-### Custom color schemes
-We can use a custom color scheme from [ColorSchemes.jl](https://juliagraphics.github.io/ColorSchemes.jl/stable/basics/) in our colormap:
+### Custom colormaps
+We can use any colormap from [ColorSchemes.jl](https://juliagraphics.github.io/ColorSchemes.jl/stable/basics/):
 
 ```@example 1
 using ColorSchemes
@@ -142,12 +142,12 @@ pipe = NormPooling() |> ExtremaNormalization() |> Colormap(:viridis) |> FlipImag
 heatmap(x, pipe) |> only
 ```
 
-We strongly suggest to only use sequential color schemes with `ExtremaNormalization`
-and divergent color schemes with `CenteredNormalization`.
+We strongly suggest to only use sequential colormaps with `ExtremaNormalization`
+and divergent colormaps with `CenteredNormalization`.
 
 !!! tip "ColorSchemes.jl catalogue"
     Refer to the [ColorSchemes.jl catalogue](https://juliagraphics.github.io/ColorSchemes.jl/stable/basics/)
-    for a gallery of available color schemes.
+    for a gallery of available colormaps.
 
 ### Overlays
 
